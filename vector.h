@@ -2,11 +2,8 @@
 #define __VECTOR__H__
 
 #define VECTOR_INIT_CAPACITY 8
-#define UNDEFINE -1
+#define UNDEFINED -1
 #define SUCCESS 0
-#define VECTOR_INIT(vec) \
-    vector vec;          \
-    vector_init(&vec)
 
 typedef struct vect_list vect_list;
 typedef struct vectorfunc vector;
@@ -23,7 +20,7 @@ struct vectorfunc
 
     int (*Total)(vector *);
     int (*Resize)(vector *, int);
-    int (*Add)(vector *, void *);
+    int (*PushBack)(vector *, void *);
     int (*Set)(vector *, int, void *);
     void *(*Get)(vector *, int);
     int (*Delete)(vector *, int);
