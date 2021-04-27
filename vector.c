@@ -46,7 +46,7 @@ int vectorPushBack(vector *V, void *obj)
     int status = UNDEFINED;
     if (V)
     {
-        if (V->list.capacity = V->list.size)
+        if (V->list.capacity == V->list.size)
         {
             status = vectorResize(V, V->list.capacity * 2);
             if (status == SUCCESS)

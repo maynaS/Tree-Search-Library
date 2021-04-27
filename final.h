@@ -1,13 +1,12 @@
-#ifndef __TSL_VECTOR_IMPLEMENTATION__H__
-#define __TSL_VECTOR_IMPLEMENTATION__H__
+#ifndef __FINAL__H__
+#define __FINAL__H__
 
-// #include "vector.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <assert.h>
 #include <string.h>
-#include "pqueue_vectors.h"
+#include <stdbool.h>
 
 #define VECTOR_INIT_CAPACITY 8
 #define UNDEFINED -1
@@ -18,6 +17,9 @@ typedef struct node* Node;
 
 typedef struct vect_list vect_list;
 typedef struct vectorfunc vector;
+
+typedef struct priority_queue Priority_Queue;
+typedef struct priority_queue *PQ;
 
 struct vect_list
 {
@@ -58,6 +60,12 @@ struct node
 
 };
 
+struct priority_queue
+{
+    int position;
+    Node *p;
+};
+
 void vector_init(vector *V);
 int vectorTotal(vector *V);
 int vectorResize(vector *V, int capacity);
@@ -72,6 +80,14 @@ void Add_Node(Node* parentptr,int n,Node new_node);
 Node New_t( int self, int data, int parent);
 void Print_Tree(Node* parentptr,int n);
 
+bool node_comparator_dfs(const Node , const Node );
+bool node_comparator_bfs(const Node , const Node );
+bool node_comparator_greedy(const Node , const Node );
 
+PQ Init_pq(PQ, int);
+void Push(PQ, Node, bool cmpfunc(const Node , const Node ));
+void Pop(PQ, bool cmpfunc(const Node , const Node ));
+Node Top(PQ);
+bool IsEmpty(PQ);
 
-#endif  //!__TSL_VECTOR_IMPLEMENTATION__H__
+#endif  //!__FINAL__H__
