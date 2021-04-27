@@ -27,26 +27,24 @@ Node create_Tree(int n, Node *parentptr)
 
 Node new_t(int self, int data, int parent)
 {
-
-    //static bool seed_rand = false;
     Node new_node;
-    /* Seed only once */
-    // if (!seed_rand) {
-    //  seed_rand = true;
-    //  srand(time(NULL));
-    // }
     new_node = (Node)malloc(sizeof(struct node));
-    // new_node->priority = rand();
-
+   
     new_node->self = self;
     new_node->value = data;
     new_node->parent = parent;
+
+   // new_node->priority = clock();f
+    new_node->depth = 0;
+    new_node->numchildren = 0;
 
     return new_node;
 }
 
 void add_node(Node *parentptr, int n, Node new_node) // doubt in arrow
-{
+{   
+    int pardepth;
+
     if (new_node->parent == -1)
     {
         parentptr[0] = new_node;
@@ -71,7 +69,12 @@ void add_node(Node *parentptr, int n, Node new_node) // doubt in arrow
         {
             j++;
         }
+       
+        pardepth = parentptr[i]->depth;
+        new_node->depth = pardepth +1 ;
+
         parentptr[i]->children[j] = new_node; // maintaining the location of children in parent struct
+        parentptr[i] ->numchildren ++ ;
 
         // printf("done %d\n",i);     // it is for checking code coreectness
         while (parentptr[i] != NULL)
