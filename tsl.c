@@ -4,23 +4,28 @@ Node create_Tree(int n, Node *parentptr)
 {
 
     Node root = NULL;
-
     Node new_node;
-
-    int check_parent[n];
-    check_parent[0] = -1;
-
+    Node fillParents[n+1];
     for (int i = 0, data, self, parent; i < n; i++)
     {
 
         scanf("%d %d %d", &self, &data, &parent);
 
         new_node = new_t(self, data, parent);
+        fillParents[self] = (Node)malloc(sizeof(node));
+        fillParents[self]->value = data;
+        fillParents[self]->parent = parent;
+        fillParents[self]->self = self;
         add_node(parentptr, n, new_node);
 
         if (i == 0)
            root = new_node;
 
+    }
+    for(int i = 1 ; i < n+1; i++)
+    {
+        fillParents[i]->next_child = parentptr[i];
+        parentptr[i] = fillParents[i];
     }
     return root;
 }
@@ -36,68 +41,35 @@ Node new_t(int self, int data, int parent)
 
    // new_node->priority = clock();f
     new_node->depth = 0;
-    new_node->numchildren = 0;
-
+    new_node->next_child = NULL;
     return new_node;
 }
 
 void add_node(Node *parentptr, int n, Node new_node) // doubt in arrow
 {   
-    int pardepth;
-
-    if (new_node->parent == -1)
+    if(parentptr[new_node->parent] == NULL)
     {
-        parentptr[0] = new_node;
-        return;
+        parentptr[new_node->parent] = new_node;
     }
-    int i = 0;
-    while (i < n - 1 && parentptr[i] != NULL && parentptr[i]->self != new_node->parent)
+    else
     {
-        i++;
-    }
-
-    if (parentptr[i] == NULL)
-    {
-        printf("parent not found\n");
-        return;
-    }
-
-    if (parentptr[i]->self == new_node->parent)
-    {
-        int j = 0;
-        while (parentptr[i]->children[j] != NULL)
-        {
-            j++;
-        }
-       
-        pardepth = parentptr[i]->depth;
-        new_node->depth = pardepth +1 ;
-
-        parentptr[i]->children[j] = new_node; // maintaining the location of children in parent struct
-        parentptr[i] ->numchildren ++ ;
-
-        // printf("done %d\n",i);     // it is for checking code coreectness
-        while (parentptr[i] != NULL)
-        {
-            i++;
-        }
-        parentptr[i] = new_node; // updating children struct in parentptrarray as they can also be parent one day :p
-        //printf("done %d  3\n",i);  // for checking code correctness
+        new_node->next_child = parentptr[new_node->parent];
+        parentptr[new_node->parent] = new_node;
     }
 }
 
 void print_tree(Node *parentptr,int n)
 {
-  int i = 0;
-  while(parentptr[i] != NULL && i<n )
+  int i = 1;
+  while(i<n+1)
   {
-     printf("%d --> [ ", parentptr[i]->self);
+     printf("%d --> [ ", i);
       
-      int j = 0;
-    while(parentptr[i]->children[j] != NULL)
+      Node slider = parentptr[i]->next_child;
+    while(slider != NULL)
     {
-      printf("%d ",parentptr[i]->children[j]->self);
-      j++;
+      printf("%d ",slider->value);
+      slider = slider->next_child;
     }
 
      printf("]\n");
