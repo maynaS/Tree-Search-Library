@@ -6,7 +6,8 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
-
+#include <math.h>
+#include <stdbool.h>
 
 typedef struct node node;
 typedef struct node* Node;
@@ -21,12 +22,8 @@ struct node{
     clock_t priority ;
     int depth;
     int seen_time; // by clock() fn
-    int number_of_children; // by updating it on every iteration through that node
+    int numchildren; // by updating it on every iteration through that node
     Node children[10000];
-
-    // for mcts it must have a value and no of stimulations it went through
-    double comp_value;
-    int stimul_freq ;
 
 };
 
