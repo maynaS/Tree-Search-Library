@@ -60,11 +60,20 @@ void pop(pqptr a)
         swap(&a->p[1], &a->p[a->position-1]);
         a->p[a->position-1] = 0;
         int position_tracker = 1;
-        while (a->p[position_tracker] < a->p[position_tracker * 2] || a->p[position_tracker] < a->p[position_tracker * 2 + 1])
+        while (((position_tracker*2 < a->position-2) && (position_tracker*2+1 < a->position-2)) && 
+        (a->p[position_tracker] <= a->p[position_tracker * 2] || a->p[position_tracker] < a->p[position_tracker * 2 + 1]))
         {
-            int bigger_index = a->p[position_tracker * 2] > a->p[position_tracker * 2 + 1] ? position_tracker * 2 : position_tracker;
+            int bigger_index = a->p[position_tracker * 2] > a->p[position_tracker * 2 + 1] ? (position_tracker * 2) : (position_tracker*2+1);
             swap(&a->p[position_tracker] , &a->p[bigger_index]);
             position_tracker = bigger_index;
+        }
+        if((position_tracker*2 == a->position-2)   && a->p[position_tracker*2] > a->p[position_tracker])
+        {
+            swap(&a->p[position_tracker] , &a->p[position_tracker*2]);
+        }
+        if((position_tracker*2+1 == a->position-2) && a->p[position_tracker*2+1] > a->p[position_tracker])
+        {
+            swap(&a->p[position_tracker] , &a->p[position_tracker*2]);
         }
         a->position--;
     }
