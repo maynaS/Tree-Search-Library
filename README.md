@@ -1,4 +1,4 @@
-#TREE SEARCH LIBRARY
+# TREE SEARCH LIBRARY
 
 #Input Format:
 
@@ -29,5 +29,5 @@
 
 #Priority Queue:
 
---> Priority Queue is implemented using Min heap which is built according to the priority associated with each of the element
+--> Priority Queue is implemented using Min heap which is built according to the priority associated with each of the element.
 --> Elements will be popped out based on the highest priority.
