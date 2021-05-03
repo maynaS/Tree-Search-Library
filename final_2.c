@@ -1,18 +1,12 @@
-/**********************************************
- * As of now, to check the traversals, change *
- * lines 165,175,180 accordingly              *
- *********************************************/
-
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <assert.h>
-#include <string.h>
-#include <math.h>
 #include <stdbool.h>
+#define MAX_SIZE 1000
+
 typedef struct node node;
 typedef struct node* Node;
+
+long double cumdepth;
 
 struct node{
 
@@ -20,12 +14,26 @@ struct node{
     int value;  // a data 
     int parent;
     
-    // You (as a developer) can add any extra information here [Will not be touched by user]
+    
     int depth;
-    int seen_time; // by clock() fn
+    int seen_time; 
     Node next_child;
+    int numchild;
 
 };
+
+typedef struct global global;
+
+struct global
+{  
+    int self;
+    int iter;
+    double avgdepth;
+    int maxdepth;
+    int branching_factor;
+};
+
+global info[MAX_SIZE];
 
 Node create_Tree(int,Node* parentptr); 
 void add_node(Node* parentptr,int n,Node new_node);
@@ -156,32 +164,71 @@ bool IsEmpty(pqptr a)
     return false;
 }
 
+void printarr(int n)
+{
+
+printf("iteration\tTraversal\tmaxdepth\tavgdepth\tB.factor\n\n");
+for(int pos =1;pos<n;pos++)
+{
+    printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n",pos,info[pos].self, info[pos].maxdepth,info[pos].avgdepth,info[pos].branching_factor);
+}
+
+}
+
+void Global(Node vertex,int pos)
+{
+ 
+ cumdepth = cumdepth +vertex->depth;
+ 
+ info[pos].maxdepth = vertex->depth;
+ info[pos].branching_factor = vertex->numchild;
+ info[pos].self = vertex->self;
+ info[pos].avgdepth =  cumdepth / pos ; 
+
+}
+
+
 void AssignSeenTime(Node *parentptr, int n)
 {
-        printf("\n\n###Traversal###\n\n");
         int counter = 1;
         pqptr a = init_pq(a, n);
         parentptr[1]->seen_time = 1;
-        push(a, parentptr[1], node_comparator_dfs);
+        push(a, parentptr[1], node_comparator_greedy);
         bool visited[n+1];
         for(int i = 1; i < n+1; i++)visited[i] = false;
-        while (!IsEmpty(a))
-        {
+        
+        int iter = 1;
+
+        while( !IsEmpty(a) )
+        {    
             Node random = top(a);
             Node new_node = parentptr[random->self];
             parentptr[top(a)->self]->seen_time = top(a)->seen_time;
             visited[top(a)->self] = true;
-            printf("%d ",top(a)->self);
-            pop(a, node_comparator_dfs);
+            
+            pop(a, node_comparator_greedy);
+
+            int i =0;
+            new_node = new_node->next_child;
+
             while(new_node != NULL)
             {
                 counter++;
                 new_node->seen_time = counter;
-                if(visited[new_node->self] == false)push(a,new_node,node_comparator_dfs);
+                new_node->depth = random->depth+1;
+                if(visited[new_node->self] == false)push(a,new_node,node_comparator_greedy);
                 new_node = new_node->next_child;
+
+                i++;
             }
-           
+           random->numchild = i;
+          
+           Global(random ,iter);
+
+           iter++;
         }
+
+        printarr(iter);
 }
 Node create_Tree(int n, Node *parentptr)
 {
@@ -248,12 +295,12 @@ void print_tree(Node *parentptr,int n)
   int i = 1;
   while(i<n+1)
   {
-     printf("%d --> [ ", i);
+     printf("%d\t--> [ ", i);
       
       Node slider = parentptr[i]->next_child;
     while(slider != NULL)
     {
-      printf("%d ",slider->value);
+      printf("%d ",slider->self);
       slider = slider->next_child;
     }
 
@@ -275,7 +322,7 @@ int main()
 
     tree = create_Tree(n,parentptr);
 
-     printf("\n\n###Tree_Map###\n\n");print_tree(parentptr,n); printf("\n\n");
+ //   printf("\n\n###Tree_Map###\n\n");print_tree(parentptr,n); printf("\n\n");
     // pqptr a;
     // for(int i = 1; i < n+1; i++)
     // {
@@ -292,6 +339,3 @@ int main()
     return 0; 
 
 }
-
-
-
