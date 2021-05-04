@@ -22,6 +22,7 @@ else if (strcmp(strategy, "A*") == 0)
         {
             Node N = parentptr[i];
             int j = 0;
+            
             while (j < N->children.list.size)
             {
                 mat[i][N->children.list.obj[j]->self - 1] = N->children.list.obj[j]->edge_wt;

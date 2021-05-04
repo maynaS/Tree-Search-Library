@@ -22,8 +22,7 @@ struct node{
     clock_t priority ;
     int depth;
     int seen_time; // by clock() fn
-    int numchildren; // by updating it on every iteration through that node
-    Node children[10000];
+    Node next_child;
 
 };
 
