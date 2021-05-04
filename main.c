@@ -29,8 +29,7 @@ int main(int argc, char **argv)
 
     tree = Create_Tree(n, parentptr);
     printf("\n");
-    Print_Tree(parentptr, n);
-    printf("\n");
+    
     if (strcmp(strategy, "DFS") == 0)
     {
         PQ Q = Init_pq(Q, n);
@@ -96,6 +95,9 @@ int main(int argc, char **argv)
         printf("\n\nEnter Exploration Strategy from any of the following: \n\n");
         printf("1. DFS\n2. BFS\n3.GREEDY\n4. A-STAR\n5. MCTS\n");
     }
+    printf("\n");
+    Print_Tree(parentptr, n);
+    printf("\n");
 
     return 0;
 }

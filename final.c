@@ -204,8 +204,8 @@ void Print_Tree(Node *parentptr, int n)
 
         for (int j = 0; j < parentptr[i]->children.list.size; j++)
         {
-            int* val = (int*)parentptr[i]->children.Get(&(parentptr[i]->children),j);
-            printf("%d ", *val);
+            // int* val = (int*)parentptr[i]->children.Get(&(parentptr[i]->children),j);
+            printf("%d ", (parentptr[i]->children.Get(&(parentptr[i]->children),j))->self);
         }
 
         printf("]\n");
