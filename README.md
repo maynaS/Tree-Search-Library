@@ -1,6 +1,6 @@
 # TREE SEARCH LIBRARY
 
-#Input Format:
+## Input Format:
 
     <number_of_nodes>:n
     <state_number> <value> <parent_state_number>
@@ -11,9 +11,9 @@
 
 --> For each of the node we are provided it's state number and the data stored in it followed by the parent's state number.
 
+- - - - 
 
-
-#Creating Tree:
+## Creating Tree:
 
 --> We maintain a array of pointers to parents and array of pointers to children for each of the corresponding parent.
 
@@ -25,9 +25,28 @@
 
      2.Now traversing the parent pointers array till we find a empty slot and adding this node as this node can also have children.
 
+- - - - 
 
-
-#Priority Queue:
+## Priority Queue:
 
 --> Priority Queue is implemented using Min heap which is built according to the priority associated with each of the element.
 --> Elements will be popped out based on the highest priority.
+
+- - - - 
+
+## Graphs
+*  CLICK HERE ->[graph dfs](https://ibb.co/12gw6mP "DFS") 
+
+* CLICK HERE ->[graph bfs](https://ibb.co/zHG1dHy "BFS")
+*  CLICK HERE ->[graph greedy](https://ibb.co/9cRMzMT "GREEDY")
+- - - - 
+
+### Contributers
+
+* Greeshma  
+* Yash
+* Nikhil 
+* Sanyam
+* Astitva 
+
+              THANK YOU !!!
