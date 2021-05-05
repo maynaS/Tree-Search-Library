@@ -44,6 +44,7 @@ int main(int argc, char **argv)
             {
                 counter++;
                 new_node->children.list.obj[i]->seen_time = counter;
+                parentptr[new_node->children.list.obj[i]->self-1] = counter;
                 Push(Q, new_node->children.Get(&(parentptr[random->self - 1]->children), i), node_comparator_dfs);
             }
         }
@@ -63,6 +64,7 @@ int main(int argc, char **argv)
             {
                 counter++;
                 new_node->children.list.obj[i]->seen_time = counter;
+                parentptr[new_node->children.list.obj[i]->self-1] = counter;
                 Push(Q, new_node->children.Get(&(parentptr[random->self - 1]->children), i), node_comparator_bfs);
             }
         }
@@ -79,6 +81,9 @@ int main(int argc, char **argv)
             Pop(Q, node_comparator_greedy);
             for (int i = 0; i < new_node->children.list.size; i++)
             {
+                counter++;
+                parentptr[new_node->children.list.obj[i]->self-1] = counter;
+                new_node->children.list.obj[i]->seen_time = counter;
                 Push(Q, new_node->children.Get(&(parentptr[random->self - 1]->children), i), node_comparator_greedy);
             }
         }
