@@ -1,7 +1,7 @@
 #include "final.h"
 #include <string.h>
 
-int counter = 1;
+int counter = 1,state=0;
 
 int main(int argc, char **argv)
 {
@@ -39,9 +39,11 @@ int main(int argc, char **argv)
         {
             Node random = Top(Q);
             Node new_node = parentptr[random->self - 1];
+            Gfill(GArray, Q, state);
             Pop(Q, node_comparator_dfs);
+            state++;
             for (int i = 0; i < new_node->children.list.size; i++)
-            {
+            {   
                 counter++;
                 new_node->children.list.obj[i]->seen_time = counter;
                 Push(Q, new_node->children.Get(&(parentptr[random->self - 1]->children), i), node_comparator_dfs);
@@ -58,7 +60,9 @@ int main(int argc, char **argv)
         {
             Node random = Top(Q);
             Node new_node = parentptr[random->self - 1];
+            Gfill(GArray, Q, state);
             Pop(Q, node_comparator_bfs);
+            state++;
             for (int i = 0; i < new_node->children.list.size; i++)
             {
                 counter++;
@@ -76,7 +80,9 @@ int main(int argc, char **argv)
         {
             Node random = Top(Q);
             Node new_node = parentptr[random->self - 1];
+            Gfill(GArray, Q, state);
             Pop(Q, node_comparator_greedy);
+            state++;
             for (int i = 0; i < new_node->children.list.size; i++)
             {
                 Push(Q, new_node->children.Get(&(parentptr[random->self - 1]->children), i), node_comparator_greedy);
