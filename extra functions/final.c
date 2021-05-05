@@ -190,7 +190,10 @@ void Add_Node(Node *parentptr, int n, Node new_node) // doubt in arrow
         return;
     }
     parentptr[new_node->parent-1]->children.PushBack(&(parentptr[new_node->parent-1]->children),new_node);
+    new_node->depth = parentptr[new_node->parent - 1]->depth + 1;
     parentptr[new_node->self-1] = new_node;
+    parentptr[new_node->parent - 1]->number_of_children++;
+
 
     return ;
 }
@@ -319,4 +322,24 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
         }
         Q->position--;
     }
+}
+
+void Gfill(Global GArray[], PQ Q, int state)
+{
+    GArray[state].depth = Q->p[1]->depth;
+    // GArray[state].height = Q->p[1]->height;
+
+    if (state != 0)
+        GArray[state].avg_depth = ((GArray[state - 1].avg_depth) * (state) + Q->p[1]->depth) / (state + 1);
+    else
+        GArray[state].avg_depth = GArray->depth;
+
+    GArray[state].value = Q->p[1]->value;
+    GArray[state].self = Q->p[1]->self;
+    GArray[state].branching_factor =Q->p[1]->number_of_children;
+
+    if (GArray[state - 1].max_depth > GArray[state].depth)
+        GArray[state].max_depth = GArray[state - 1].max_depth;
+    else
+        GArray[state].max_depth = GArray[state].depth;
 }
