@@ -66,6 +66,20 @@ struct priority_queue
     Node *p;
 };
 
+typedef struct global_part Global;
+struct global_part
+{
+    int self;
+    int value;
+    int depth;
+    float avg_depth;
+    int branching_factor;
+    int max_depth;
+    int height;
+};
+
+Global GArray[100000]; //just to maintain the information of a particular node in each of the traversals
+
 void vector_init(vector *V);
 int vectorTotal(vector *V);
 int vectorResize(vector *V, int capacity);
@@ -89,5 +103,7 @@ void Push(PQ, Node, bool cmpfunc(const Node , const Node ));
 void Pop(PQ, bool cmpfunc(const Node , const Node ));
 Node Top(PQ);
 bool IsEmpty(PQ);
+
+void Gfill(Global GArray[], PQ Q,int state);
 
 #endif  //!__FINAL__H__
