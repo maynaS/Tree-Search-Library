@@ -9,6 +9,7 @@ typedef struct node *Node;
 
 long double cumdepth;
 
+//struct to maintain the information of each of the node
 struct node
 {
 
@@ -33,12 +34,14 @@ struct global
     int branching_factor;
 };
 
-global info[MAX_SIZE];
+global info[MAX_SIZE];//A Global array of structs to keep track of the information for each of the iteration in traversal
 
 Node create_Tree(int, Node *parentptr);
 void add_node(Node *parentptr, int n, Node new_node);
 Node new_t(int self, int data, int parent);
 void print_tree(Node *parentptr, int n);
+
+
 typedef struct priority_queue priority_queue;
 typedef priority_queue *pqptr;
 struct priority_queue
@@ -56,6 +59,13 @@ void push(pqptr a, Node val, bool CmpFunc(Node a, Node b));
 void pop(pqptr a, bool CmpFunc(Node a, Node b));
 Node top(pqptr a);
 
+//*****************************************
+//*******function implementations**********
+//*****************************************
+
+
+//COMPARATOR FUNCTIONS FOR EACH OF THE ALGORITHMS
+
 bool node_comparator_dfs(const Node a, const Node b)
 {
     return a->seen_time > b->seen_time;
@@ -70,6 +80,8 @@ bool node_comparator_greedy(const Node a, const Node b)
 {
     return a->value > b->value;
 }
+
+
 
 void swap(Node *a, Node *b)
 {
@@ -164,6 +176,7 @@ bool IsEmpty(pqptr a)
     return false;
 }
 
+//Printing the information placed in the global array corresponding to each iteration
 void printarr(int n)
 {
 
@@ -174,6 +187,7 @@ void printarr(int n)
     }
 }
 
+//filling the information in global array info[] for each iteration
 void Global(Node vertex, int pos)
 {
 
@@ -301,6 +315,7 @@ void AssignSeenTime(Node *parentptr, int n)
     printarr(iter);
 }
 
+//creating the tree
 Node create_Tree(int n, Node *parentptr)
 {
 
@@ -311,27 +326,37 @@ Node create_Tree(int n, Node *parentptr)
     {
 
         scanf("%d %d %d", &self, &data, &parent);
-
-        new_node = new_t(self, data, parent);
+ 
+        //for the given input self value,filling the information of parents at each respective index
         fillParents[self] = (Node)malloc(sizeof(node));
         fillParents[self]->value = data;
         fillParents[self]->parent = parent;
         fillParents[self]->self = self;
+        
+        //creating other node with the same input data as a node can be a child of one node and parent of the other
+        //and adding each node to their respective parent
+        new_node = new_t(self, data, parent);
         add_node(parentptr, n, new_node);
 
         if (i == 0)
             root = new_node;
     }
     parentptr[1]->seen_time = 0;
+    
+    //for each of the pointer parentptr[i] we have its children in the linked list and each fillparent[i] has the parent
+    //so we are linking each parent with the children
     for (int i = 1; i < n + 1; i++)
     {
         fillParents[i]->next_child = parentptr[i];
         parentptr[i] = fillParents[i];
     }
+    
     AssignSeenTime(parentptr, n);
+    
     return root;
 }
 
+//function for creating a node and filling information with the given self value,data and parent
 Node new_t(int self, int data, int parent)
 {
     Node new_node;
@@ -347,6 +372,7 @@ Node new_t(int self, int data, int parent)
     return new_node;
 }
 
+//Adding the newly created node to the corresponding parent at the begining of linked list
 void add_node(Node *parentptr, int n, Node new_node)
 {
     if (parentptr[new_node->parent] == NULL)
@@ -360,6 +386,7 @@ void add_node(Node *parentptr, int n, Node new_node)
     }
 }
 
+//printing the tree in the form of a adjacency list,where each node and corresponding self value of each children are shown
 void print_tree(Node *parentptr, int n)
 {
     int i = 1;
@@ -379,6 +406,10 @@ void print_tree(Node *parentptr, int n)
     }
 }
 
+//***************************************************
+//********************main function******************
+//***************************************************
+
 int main()
 {
     int n;
@@ -387,9 +418,10 @@ int main()
     Node tree;
     Node *parentptr;
     parentptr = (Node *)malloc(sizeof(Node) * (n + 1));
+    
     for (int i = 0; i < n + 1; i++)
         parentptr[i] = NULL;
-
+  
     tree = create_Tree(n, parentptr);
 
     printf("\n\n###Tree_Map###\n\n");
