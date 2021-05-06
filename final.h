@@ -45,26 +45,20 @@ struct node
 {
 
     int self; 
-    int value;  // a data 
+    int value;  
     int parent;
     
-    // You (as a developer) can add any extra information here [Will not be touched by user]
-    clock_t priority ;
     int depth;
-    int seen_time; // by clock() fn
+    int seen_time; 
     int number_of_children; // by updating it on every iteration through that node
     vector children; //Better than initialising array of 10000 nodes
-    // for mcts it must have a value and no of stimulations it went through
-    double comp_value;
-    int stimul_freq ;
-
+  
 };
 
 struct priority_queue
 {
     int position;
     Node *p;
-    Node *PositionTracker;
 };
 
 typedef struct global_part Global;
@@ -76,7 +70,7 @@ struct global_part
     float avg_depth;
     int branching_factor;
     int max_depth;
-    int height;
+  //  int height;
 };
 
 Global GArray[100000]; //just to maintain the information of a particular node in each of the traversals
@@ -99,13 +93,13 @@ bool node_comparator_dfs(const Node , const Node );
 bool node_comparator_bfs(const Node , const Node );
 bool node_comparator_greedy(const Node , const Node );
 
-bool isPresent(PQ a,int seen_time);
 PQ Init_pq(PQ, int);
 void Push(PQ, Node, bool cmpfunc(const Node , const Node ));
 void Pop(PQ, bool cmpfunc(const Node , const Node ));
 Node Top(PQ);
 bool IsEmpty(PQ);
 
-void Gfill(Global GArray[], PQ Q,int state);
+void Gfill( PQ Q,int state);
+void Gprint(int n);
 
 #endif  //!__FINAL__H__

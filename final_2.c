@@ -1,31 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
 #define MAX_SIZE 1000
 
 typedef struct node node;
-typedef struct node* Node;
+typedef struct node *Node;
 
 long double cumdepth;
 
-struct node{
+struct node
+{
 
-    int self; 
-    int value;  // a data 
+    int self;
+    int value; 
     int parent;
-    
-    
+
     int depth;
-    int seen_time; 
+    int seen_time;
     Node next_child;
     int numchild;
-
 };
 
 typedef struct global global;
 
 struct global
-{  
+{
     int self;
     int iter;
     double avgdepth;
@@ -35,10 +35,10 @@ struct global
 
 global info[MAX_SIZE];
 
-Node create_Tree(int,Node* parentptr); 
-void add_node(Node* parentptr,int n,Node new_node);
-Node new_t( int self, int data, int parent);
-void print_tree(Node* parentptr,int n);
+Node create_Tree(int, Node *parentptr);
+void add_node(Node *parentptr, int n, Node new_node);
+Node new_t(int self, int data, int parent);
+void print_tree(Node *parentptr, int n);
 typedef struct priority_queue priority_queue;
 typedef priority_queue *pqptr;
 struct priority_queue
@@ -47,9 +47,9 @@ struct priority_queue
     Node *p;
 };
 
-bool node_comparator_dfs(const Node a,const Node b);
-bool node_comparator_bfs(const Node a,const Node b);
-bool node_comparator_greedy(const Node a,const Node b);
+bool node_comparator_dfs(const Node a, const Node b);
+bool node_comparator_bfs(const Node a, const Node b);
+bool node_comparator_greedy(const Node a, const Node b);
 
 pqptr init_pq(pqptr a, int n);
 void push(pqptr a, Node val, bool CmpFunc(Node a, Node b));
@@ -167,75 +167,146 @@ bool IsEmpty(pqptr a)
 void printarr(int n)
 {
 
-printf("iteration\tTraversal\tmaxdepth\tavgdepth\tB.factor\n\n");
-for(int pos =1;pos<n;pos++)
+    printf("iteration\tTraversal\tmaxdepth\tavgdepth\tB.factor\n\n");
+    for (int pos = 1; pos < n; pos++)
+    {
+        printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n", pos, info[pos].self, info[pos].maxdepth, info[pos].avgdepth, info[pos].branching_factor);
+    }
+}
+
+void Global(Node vertex, int pos)
 {
-    printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n",pos,info[pos].self, info[pos].maxdepth,info[pos].avgdepth,info[pos].branching_factor);
+
+    cumdepth = cumdepth + vertex->depth;
+
+    info[pos].maxdepth = vertex->depth;
+    info[pos].branching_factor = vertex->numchild;
+    info[pos].self = vertex->self;
+    info[pos].avgdepth = cumdepth / pos;
 }
-
-}
-
-void Global(Node vertex,int pos)
-{
- 
- cumdepth = cumdepth +vertex->depth;
- 
- info[pos].maxdepth = vertex->depth;
- info[pos].branching_factor = vertex->numchild;
- info[pos].self = vertex->self;
- info[pos].avgdepth =  cumdepth / pos ; 
-
-}
-
 
 void AssignSeenTime(Node *parentptr, int n)
 {
-        int counter = 1;
-        pqptr a = init_pq(a, n);
-        parentptr[1]->seen_time = 1;
+
+    int p;
+    printf("\nPress 1 for DFS \n");
+    printf("Press 2 for BFS\n");
+    printf("Press 3 for GREEDY\n\n");
+    scanf("%d", &p);
+
+    int counter = 1;
+    pqptr a = init_pq(a, n);
+    parentptr[1]->seen_time = 1;
+    switch (p)
+    {
+    case 1:
+        push(a, parentptr[1], node_comparator_dfs);
+
+        break;
+    case 2:
+        push(a, parentptr[1], node_comparator_bfs);
+        break;
+    case 3:
         push(a, parentptr[1], node_comparator_greedy);
-        bool visited[n+1];
-        for(int i = 1; i < n+1; i++)visited[i] = false;
-        
-        int iter = 1;
+        break;
 
-        while( !IsEmpty(a) )
-        {    
-            Node random = top(a);
-            Node new_node = parentptr[random->self];
-            parentptr[top(a)->self]->seen_time = top(a)->seen_time;
-            visited[top(a)->self] = true;
-            
+    default:
+        printf("You pressed wrong keyPress either 1 ,2 or 3.\n");
+        exit(0);
+    }
+
+    bool visited[n + 1];
+    for (int i = 1; i < n + 1; i++)
+        visited[i] = false;
+
+    int iter = 1;
+
+    while (!IsEmpty(a))
+    {
+        Node random = top(a);
+        Node new_node = parentptr[random->self];
+        parentptr[top(a)->self]->seen_time = top(a)->seen_time;
+        visited[top(a)->self] = true;
+
+        switch (p)
+        {
+        case 1:
+            pop(a, node_comparator_dfs);
+            break;
+        case 2:
+            pop(a, node_comparator_bfs);
+            break;
+        case 3:
             pop(a, node_comparator_greedy);
-
-            int i =0;
-            new_node = new_node->next_child;
-
-            while(new_node != NULL)
-            {
-                counter++;
-                new_node->seen_time = counter;
-                new_node->depth = random->depth+1;
-                if(visited[new_node->self] == false)push(a,new_node,node_comparator_greedy);
-                new_node = new_node->next_child;
-
-                i++;
-            }
-           random->numchild = i;
-          
-           Global(random ,iter);
-
-           iter++;
+            break;
+        default:
+            printf("You pressed wrong keyPress either 1 ,2 or 3.");
+            exit(0);
         }
 
-        printarr(iter);
+        int i = 0;
+        new_node = new_node->next_child;
+
+        while (new_node != NULL)
+        {
+            counter++;
+            new_node->seen_time = counter;
+            new_node->depth = random->depth + 1;
+            if (visited[new_node->self] == false)
+                switch (p)
+                {
+                case 1:
+                    push(a, new_node, node_comparator_dfs);
+
+                    break;
+                case 2:
+                    push(a, new_node, node_comparator_bfs);
+                    break;
+                case 3:
+                    push(a, new_node, node_comparator_greedy);
+                    break;
+
+                default:
+                    printf("You pressed wrong keyPress either 1 ,2 or 3.\n");
+                    exit(0);
+                }
+            new_node = new_node->next_child;
+
+            i++;
+        }
+        random->numchild = i;
+
+        Global(random, iter);
+
+        iter++;
+    }
+
+    switch (p)
+    {
+    case 1:
+        printf("\n***DFS***\n");
+
+        break;
+    case 2:
+        printf("\n***BFS***\n");
+        break;
+    case 3:
+        printf("\n***GREEDY***\n");
+        break;
+
+    default:
+        printf("You pressed wrong keyPress either 1 ,2 or 3.\n");
+        exit(0);
+    }
+    printarr(iter);
 }
+
 Node create_Tree(int n, Node *parentptr)
 {
 
     Node root = NULL;
     Node new_node;
-    Node fillParents[n+1];
+    Node fillParents[n + 1];
     for (int i = 0, data, self, parent; i < n; i++)
     {
 
@@ -249,15 +320,15 @@ Node create_Tree(int n, Node *parentptr)
         add_node(parentptr, n, new_node);
 
         if (i == 0)
-           root = new_node;
+            root = new_node;
     }
     parentptr[1]->seen_time = 0;
-    for(int i = 1 ; i < n+1; i++)
+    for (int i = 1; i < n + 1; i++)
     {
         fillParents[i]->next_child = parentptr[i];
         parentptr[i] = fillParents[i];
     }
-    AssignSeenTime(parentptr,n);
+    AssignSeenTime(parentptr, n);
     return root;
 }
 
@@ -265,12 +336,11 @@ Node new_t(int self, int data, int parent)
 {
     Node new_node;
     new_node = (Node)malloc(sizeof(struct node));
-   
+
     new_node->self = self;
     new_node->value = data;
     new_node->parent = parent;
 
-   // new_node->priority = clock();f
     new_node->depth = 0;
     new_node->next_child = NULL;
     new_node->seen_time = 1e9;
@@ -278,8 +348,8 @@ Node new_t(int self, int data, int parent)
 }
 
 void add_node(Node *parentptr, int n, Node new_node)
-{   
-    if(parentptr[new_node->parent] == NULL)
+{
+    if (parentptr[new_node->parent] == NULL)
     {
         parentptr[new_node->parent] = new_node;
     }
@@ -290,52 +360,41 @@ void add_node(Node *parentptr, int n, Node new_node)
     }
 }
 
-void print_tree(Node *parentptr,int n)
+void print_tree(Node *parentptr, int n)
 {
-  int i = 1;
-  while(i<n+1)
-  {
-     printf("%d\t--> [ ", i);
-      
-      Node slider = parentptr[i]->next_child;
-    while(slider != NULL)
+    int i = 1;
+    while (i < n + 1)
     {
-      printf("%d ",slider->self);
-      slider = slider->next_child;
+        printf("%d\t--> [ ", i);
+
+        Node slider = parentptr[i]->next_child;
+        while (slider != NULL)
+        {
+            printf("%d ", slider->self);
+            slider = slider->next_child;
+        }
+
+        printf("]\n");
+        i++;
     }
-
-     printf("]\n");
-     i++;
-  }
-
 }
 
 int main()
 {
-    int n ;
-    scanf("%d",&n);    // this can be shifted into .c also
+    int n;
+    scanf("%d", &n); 
 
     Node tree;
-    Node* parentptr;
-        parentptr = (Node*)malloc(sizeof(Node)*(n+1));
-        for(int i = 0 ; i < n+1; i++)parentptr[i] = NULL;
+    Node *parentptr;
+    parentptr = (Node *)malloc(sizeof(Node) * (n + 1));
+    for (int i = 0; i < n + 1; i++)
+        parentptr[i] = NULL;
 
-    tree = create_Tree(n,parentptr);
+    tree = create_Tree(n, parentptr);
 
- //   printf("\n\n###Tree_Map###\n\n");print_tree(parentptr,n); printf("\n\n");
-    // pqptr a;
-    // for(int i = 1; i < n+1; i++)
-    // {
-    //     push(a, parentptr[i], node_comparator_dfs);
-    //     //printf("%d ",top(a)->self);
-        
-    // }
-    // for(int i =1; i < n+1; i++)
-    // {
-    //     printf("%d ",top(a)->self);
-    //     pop(a,node_comparator_dfs);
-    // }
-    // printf("\n***DFS***\n");
-    return 0; 
+    printf("\n\n###Tree_Map###\n\n");
+    print_tree(parentptr, n);
+    printf("\n\n");
 
+    return 0;
 }

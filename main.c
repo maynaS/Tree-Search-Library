@@ -39,17 +39,17 @@ int main(int argc, char **argv)
         {
             Node random = Top(Q);
             Node new_node = parentptr[random->self - 1];
-            Gfill(GArray, Q, state);
+            Gfill( Q, state);
             Pop(Q, node_comparator_dfs);
             state++;
             for (int i = 0; i < new_node->children.list.size; i++)
             {   
                 counter++;
                 new_node->children.list.obj[i]->seen_time = counter;
-                parentptr[new_node->children.list.obj[i]->self-1] = counter;
                 Push(Q, new_node->children.Get(&(parentptr[random->self - 1]->children), i), node_comparator_dfs);
             }
         }
+        Gprint(state);
         printf("\n");
     }
     else if (strcmp(strategy, "BFS") == 0)
@@ -61,17 +61,17 @@ int main(int argc, char **argv)
         {
             Node random = Top(Q);
             Node new_node = parentptr[random->self - 1];
-            Gfill(GArray, Q, state);
+            Gfill( Q, state);
             Pop(Q, node_comparator_bfs);
             state++;
             for (int i = 0; i < new_node->children.list.size; i++)
             {
                 counter++;
                 new_node->children.list.obj[i]->seen_time = counter;
-                parentptr[new_node->children.list.obj[i]->self-1] = counter;
                 Push(Q, new_node->children.Get(&(parentptr[random->self - 1]->children), i), node_comparator_bfs);
             }
         }
+         Gprint(state);
         printf("\n");
     }
     else if (strcmp(strategy, "GREEDY") == 0)
@@ -82,17 +82,15 @@ int main(int argc, char **argv)
         {
             Node random = Top(Q);
             Node new_node = parentptr[random->self - 1];
-            Gfill(GArray, Q, state);
+            Gfill( Q, state);
             Pop(Q, node_comparator_greedy);
             state++;
             for (int i = 0; i < new_node->children.list.size; i++)
             {
-                counter++;
-                parentptr[new_node->children.list.obj[i]->self-1] = counter;
-                new_node->children.list.obj[i]->seen_time = counter;
                 Push(Q, new_node->children.Get(&(parentptr[random->self - 1]->children), i), node_comparator_greedy);
             }
         }
+         Gprint(state);
         printf("\n");
     }
     else if (strcmp(strategy, "A-STAR") == 0)

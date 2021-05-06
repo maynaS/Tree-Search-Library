@@ -164,15 +164,11 @@ Node Create_Tree(int n, Node *parentptr)
 Node New_t(int self, int data, int parent)
 {
 
-    //static bool seed_rand = false;
+
     Node new_node;
-    /* Seed only once */
-    // if (!seed_rand) {
-    //  seed_rand = true;
-    //  srand(time(NULL));
-    // }
+ 
     new_node = (Node)malloc(sizeof(struct node));
-    // new_node->priority = rand();
+   
 
     new_node->self = self;
     new_node->value = data;
@@ -182,7 +178,7 @@ Node New_t(int self, int data, int parent)
     return new_node;
 }
 
-void Add_Node(Node *parentptr, int n, Node new_node) // doubt in arrow
+void Add_Node(Node *parentptr, int n, Node new_node)
 {
     if (new_node->parent == -1)
     {
@@ -238,26 +234,11 @@ bool node_comparator_greedy(const Node a, const Node b)
     return a->value > b->value;
 }
 
-
-bool isPresent(PQ a,int state_number)
-{
-    if(a->PositionTracker[state_number] != NULL)
-        return true;
-    else
-        return false;
-}
-
-void ClearTracker()
-{
-
-}
-
 PQ Init_pq(PQ a, int n)
 {
     a = (PQ)malloc(sizeof(Priority_Queue));
     a->position = 1;
     a->p = (Node *)malloc(sizeof(Node) * (n + 1));
-    a->PositionTracker = (Node *)malloc(sizeof(Node) * (n+1));
     return a;
 }
 
@@ -266,13 +247,11 @@ void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
     if (a->position == 0)
     {
         a->p[0] = new_node;
-        a->PositionTracker[new_node->self] = new_node;
         a->position++;
     }
     else
     {
         a->p[a->position] = new_node;
-        a->PositionTracker[new_node->self] = new_node;
         int curr_position = a->position;
         int parent_position = curr_position / 2;
         while (parent_position >= 1 && cmpfunc(a->p[curr_position], a->p[parent_position]) /* a->p[curr_position]->seen_time > a->p[parent_position]->seen_time */)
@@ -310,8 +289,7 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
 {
     if (Q->position > 1)
     {
-        Q->PositionTracker[Top(Q)->self] = NULL;
-        printf("%d ", Q->p[1]->self);
+      //  printf("%d ", Q->p[1]->self);
         swap(&Q->p[1], &Q->p[Q->position - 1]);
         int idx = 1;
         int size = Q->position - 1;
@@ -342,7 +320,7 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
     }
 }
 
-void Gfill(Global GArray[], PQ Q, int state)
+void Gfill( PQ Q, int state)
 {
     GArray[state].depth = Q->p[1]->depth;
     // GArray[state].height = Q->p[1]->height;
@@ -356,8 +334,17 @@ void Gfill(Global GArray[], PQ Q, int state)
     GArray[state].self = Q->p[1]->self;
     GArray[state].branching_factor =Q->p[1]->number_of_children;
 
-    if (GArray[state - 1].max_depth > GArray[state].depth)
-        GArray[state].max_depth = GArray[state - 1].max_depth;
-    else
+   // if (GArray[state - 1].max_depth > GArray[state].depth)
+   //     GArray[state].max_depth = GArray[state - 1].max_depth;
+   // else 
         GArray[state].max_depth = GArray[state].depth;
+}
+
+void Gprint(int N)
+{   
+     printf("iteration\t Visit\t \tmaxdepth\tavgdepth\tB.factor\n\n");
+    for (int pos = 0; pos < N; pos++)
+    {
+        printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n", pos+1, GArray[pos].self, GArray[pos].max_depth, GArray[pos].avg_depth, GArray[pos].branching_factor);
+    }
 }
