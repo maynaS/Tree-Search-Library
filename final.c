@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <assert.h>
 
+//****************************************
+//*******VECTOR IMPLEMENTATION************
+//****************************************
+
 void vector_init(vector *V)
 {
     V->Total = vectorTotal;
@@ -136,6 +140,10 @@ int vectorFree(vector *V)
     return status;
 }
 
+//*****************************************
+//************CREATING TREE****************
+//*****************************************
+
 Node Create_Tree(int n, Node *parentptr)
 {
 
@@ -148,20 +156,19 @@ Node Create_Tree(int n, Node *parentptr)
 
         scanf("%d %d %d", &self, &data, &parent);
 
-        new_node = New_t(self, data, parent);
+        //a node is created with given input and it is added as a child to corresponding parent
+        //and the it is added as a parent in parentptr array
+        new_node = New_t(self, data, parent); 
         Add_Node(parentptr, n, new_node);
+        
 
         if (i == 0)
             root = new_node;
-        else
-        {
-            new_node = New_t(self, data, parent);
-        }
     }
     return root;
 }
 
-Node New_t(int self, int data, int parent)
+Node New_t(int self, int data, int parent) //creating a new node with given input
 {
 
 
@@ -173,7 +180,7 @@ Node New_t(int self, int data, int parent)
     new_node->self = self;
     new_node->value = data;
     new_node->parent = parent;
-    vector_init(&(new_node->children));
+    vector_init(&(new_node->children)); //initialising so that vector operations can be performed when number of children exceeds the maximum value
 
     return new_node;
 }
@@ -185,10 +192,16 @@ void Add_Node(Node *parentptr, int n, Node new_node)
         parentptr[0] = new_node;
         return;
     }
+    
+    //adding the new node to the corresponding parent's arrray
     parentptr[new_node->parent-1]->children.PushBack(&(parentptr[new_node->parent-1]->children),new_node);
-    new_node->depth = parentptr[new_node->parent - 1]->depth + 1;
+    
+    //the node itself is also a parent(though it may or maynot have children)
     parentptr[new_node->self-1] = new_node;
-    parentptr[new_node->parent - 1]->number_of_children++;
+    
+    //keeping track of information of node's depth & number of children of its parent as each node is getting added
+    new_node->depth = parentptr[new_node->parent - 1]->depth + 1;
+    parentptr[new_node->parent - 1]->number_of_children++; 
 
 
     return ;
@@ -219,6 +232,10 @@ void swap(Node *a, Node *b)
     *b = t;
 }
 
+//**********************************************
+//**************COMPARATOR FUNCTIONS************
+//**********************************************
+
 bool node_comparator_dfs(const Node a, const Node b)
 {
     return a->seen_time > b->seen_time;
@@ -233,6 +250,12 @@ bool node_comparator_greedy(const Node a, const Node b)
 {
     return a->value > b->value;
 }
+
+
+//*******************************************
+//*************PRIORITY QUEUE****************
+//*******************************************
+
 
 PQ Init_pq(PQ a, int n)
 {
@@ -320,10 +343,16 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
     }
 }
 
+
+//************************************
+//***********GLOBAL ARRAY*************
+//************************************
+
+
 void Gfill( PQ Q, int state)
 {
+    //filling the information of the global array of struct: GArray[] at each iteration in the traversal
     GArray[state].depth = Q->p[1]->depth;
-    // GArray[state].height = Q->p[1]->height;
 
     if (state != 0)
         GArray[state].avg_depth = ((GArray[state - 1].avg_depth) * (state) + Q->p[1]->depth) / (state + 1);
@@ -340,7 +369,7 @@ void Gfill( PQ Q, int state)
         GArray[state].max_depth = GArray[state].depth;
 }
 
-void Gprint(int N)
+void Gprint(int N)//printing information of the GArray[],stored in each iteration
 {   
      printf("iteration\t Visit\t \tmaxdepth\tavgdepth\tB.factor\n\n");
     for (int pos = 0; pos < N; pos++)
