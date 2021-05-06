@@ -64,6 +64,7 @@ struct priority_queue
 {
     int position;
     Node *p;
+    Node *PositionTracker;
 };
 
 typedef struct global_part Global;
@@ -98,6 +99,7 @@ bool node_comparator_dfs(const Node , const Node );
 bool node_comparator_bfs(const Node , const Node );
 bool node_comparator_greedy(const Node , const Node );
 
+bool isPresent(PQ a,int seen_time);
 PQ Init_pq(PQ, int);
 void Push(PQ, Node, bool cmpfunc(const Node , const Node ));
 void Pop(PQ, bool cmpfunc(const Node , const Node ));

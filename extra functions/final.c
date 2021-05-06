@@ -238,11 +238,26 @@ bool node_comparator_greedy(const Node a, const Node b)
     return a->value > b->value;
 }
 
+
+bool isPresent(PQ a,int state_number)
+{
+    if(a->PositionTracker[state_number] != NULL)
+        return true;
+    else
+        return false;
+}
+
+void ClearTracker()
+{
+
+}
+
 PQ Init_pq(PQ a, int n)
 {
     a = (PQ)malloc(sizeof(Priority_Queue));
     a->position = 1;
     a->p = (Node *)malloc(sizeof(Node) * (n + 1));
+    a->PositionTracker = (Node *)malloc(sizeof(Node) * (n+1));
     return a;
 }
 
@@ -251,11 +266,13 @@ void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
     if (a->position == 0)
     {
         a->p[0] = new_node;
+        a->PositionTracker[new_node->self] = new_node;
         a->position++;
     }
     else
     {
         a->p[a->position] = new_node;
+        a->PositionTracker[new_node->self] = new_node;
         int curr_position = a->position;
         int parent_position = curr_position / 2;
         while (parent_position >= 1 && cmpfunc(a->p[curr_position], a->p[parent_position]) /* a->p[curr_position]->seen_time > a->p[parent_position]->seen_time */)
@@ -293,6 +310,7 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
 {
     if (Q->position > 1)
     {
+        Q->PositionTracker[Top(Q)->self] = NULL;
         printf("%d ", Q->p[1]->self);
         swap(&Q->p[1], &Q->p[Q->position - 1]);
         int idx = 1;
