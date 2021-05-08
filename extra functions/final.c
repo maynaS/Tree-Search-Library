@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#define ABSS(a, b) ((a) > (b) ? (a) - (b) : (b) - (a))
 
 void vector_init(vector *V)
 {
@@ -12,15 +13,14 @@ void vector_init(vector *V)
     V->Get = vectorGet;
     V->Free = vectorFree;
     V->Delete = vectorDelete;
-
     V->list.capacity = VECTOR_INIT_CAPACITY;
     V->list.size = 0;
-    V->list.obj = malloc(sizeof(Node ) * V->list.capacity);
+    V->list.obj = malloc(sizeof(Node) * V->list.capacity);
 }
 
 int vectorTotal(vector *V)
 {
-    if(V)
+    if (V)
     {
         return V->list.size;
     }
@@ -31,7 +31,7 @@ int vectorResize(vector *V, int capacity)
     int status = UNDEFINED;
     if (V)
     {
-        Node *obj = realloc(V->list.obj, sizeof(Node ) * capacity);
+        Node *obj = realloc(V->list.obj, sizeof(Node) * capacity);
         if (obj)
         {
             V->list.obj = obj;
@@ -100,17 +100,13 @@ int vectorDelete(vector *V, int idx)
         {
             return status;
         }
-
         V->list.obj[idx] = NULL;
-
         for (int i = idx; i < V->list.size - 1; i++)
         {
             V->list.obj[i] = V->list.obj[i + 1];
             V->list.obj[i + 1] = NULL;
         }
-
         V->list.size--;
-
         if (V->list.size >= 0 && 4 * V->list.size <= V->list.capacity)
         {
             vectorResize(V, V->list.capacity / 2);
@@ -138,19 +134,13 @@ int vectorFree(vector *V)
 
 Node Create_Tree(int n, Node *parentptr)
 {
-
     Node root = NULL;
-
     Node new_node;
-
     for (int i = 0, data, self, parent; i < n; i++)
     {
-
         scanf("%d %d %d", &self, &data, &parent);
-
         new_node = New_t(self, data, parent);
         Add_Node(parentptr, n, new_node);
-
         if (i == 0)
             root = new_node;
         else
@@ -163,7 +153,6 @@ Node Create_Tree(int n, Node *parentptr)
 
 Node New_t(int self, int data, int parent)
 {
-
     //static bool seed_rand = false;
     Node new_node;
     /* Seed only once */
@@ -173,12 +162,10 @@ Node New_t(int self, int data, int parent)
     // }
     new_node = (Node)malloc(sizeof(struct node));
     // new_node->priority = rand();
-
     new_node->self = self;
     new_node->value = data;
     new_node->parent = parent;
     vector_init(&(new_node->children));
-
     return new_node;
 }
 
@@ -189,13 +176,12 @@ void Add_Node(Node *parentptr, int n, Node new_node) // doubt in arrow
         parentptr[0] = new_node;
         return;
     }
-    parentptr[new_node->parent-1]->children.PushBack(&(parentptr[new_node->parent-1]->children),new_node);
+    new_node->edge_wt = ABSS(new_node->value, parentptr[new_node->parent - 1]->value);
+    parentptr[new_node->parent - 1]->children.PushBack(&(parentptr[new_node->parent - 1]->children), new_node);
     new_node->depth = parentptr[new_node->parent - 1]->depth + 1;
-    parentptr[new_node->self-1] = new_node;
+    parentptr[new_node->self - 1] = new_node;
     parentptr[new_node->parent - 1]->number_of_children++;
-
-
-    return ;
+    return;
 }
 
 void Print_Tree(Node *parentptr, int n)
@@ -204,13 +190,11 @@ void Print_Tree(Node *parentptr, int n)
     while (parentptr[i] != NULL && i < n)
     {
         printf("%d --> [ ", parentptr[i]->self);
-
         for (int j = 0; j < parentptr[i]->children.list.size; j++)
         {
             // int* val = (int*)parentptr[i]->children.Get(&(parentptr[i]->children),j);
-            printf("%d ", (parentptr[i]->children.Get(&(parentptr[i]->children),j))->self);
+            printf("%d ", (parentptr[i]->children.Get(&(parentptr[i]->children), j))->self);
         }
-
         printf("]\n");
         i++;
     }
@@ -238,10 +222,14 @@ bool node_comparator_greedy(const Node a, const Node b)
     return a->value > b->value;
 }
 
-
-bool isPresent(PQ a,int state_number)
+bool node_comparator_astar(const Node a, const Node b)
 {
-    if(a->PositionTracker[state_number] != NULL)
+    return a->f < b->f;
+}
+
+bool isPresent(PQ a, int state_number)
+{
+    if (a->PositionTracker[state_number] != NULL)
         return true;
     else
         return false;
@@ -249,7 +237,6 @@ bool isPresent(PQ a,int state_number)
 
 void ClearTracker()
 {
-
 }
 
 PQ Init_pq(PQ a, int n)
@@ -257,7 +244,7 @@ PQ Init_pq(PQ a, int n)
     a = (PQ)malloc(sizeof(Priority_Queue));
     a->position = 1;
     a->p = (Node *)malloc(sizeof(Node) * (n + 1));
-    a->PositionTracker = (Node *)malloc(sizeof(Node) * (n+1));
+    a->PositionTracker = (Node *)malloc(sizeof(Node) * (n + 1));
     return a;
 }
 
@@ -277,7 +264,6 @@ void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
         int parent_position = curr_position / 2;
         while (parent_position >= 1 && cmpfunc(a->p[curr_position], a->p[parent_position]) /* a->p[curr_position]->seen_time > a->p[parent_position]->seen_time */)
         {
-
             swap(&a->p[curr_position], &a->p[parent_position]);
             curr_position /= 2;
             parent_position /= 2;
@@ -346,16 +332,13 @@ void Gfill(Global GArray[], PQ Q, int state)
 {
     GArray[state].depth = Q->p[1]->depth;
     // GArray[state].height = Q->p[1]->height;
-
     if (state != 0)
         GArray[state].avg_depth = ((GArray[state - 1].avg_depth) * (state) + Q->p[1]->depth) / (state + 1);
     else
         GArray[state].avg_depth = GArray->depth;
-
     GArray[state].value = Q->p[1]->value;
     GArray[state].self = Q->p[1]->self;
-    GArray[state].branching_factor =Q->p[1]->number_of_children;
-
+    GArray[state].branching_factor = Q->p[1]->number_of_children;
     if (GArray[state - 1].max_depth > GArray[state].depth)
         GArray[state].max_depth = GArray[state - 1].max_depth;
     else
