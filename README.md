@@ -34,11 +34,14 @@
 
 - - - - 
 
-## Graphs
-*  CLICK HERE ->[graph dfs](https://ibb.co/12gw6mP "DFS") 
+# Graphs
+## DFS
+![DFS](graphs/DFS.png)
+## BFS
+![DFS](graphs/DFS.png)
+## GREEDY
+![DFS](graphs/GREEDY.png)
 
-* CLICK HERE ->[graph bfs](https://ibb.co/zHG1dHy "BFS")
-*  CLICK HERE ->[graph greedy](https://ibb.co/9cRMzMT "GREEDY")
 - - - - 
 
 ### Contributers
