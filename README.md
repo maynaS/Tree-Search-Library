@@ -2,12 +2,32 @@
 
 ## Overview
 
-A Generic Tree Search Library is made for exploring a Tree, created with the given input node information, using the corresponding comparator functions written based on their seen time or value, for each of the exploration strategy.The Algorithms that can be implemeneted using this Tree Search Library are DFS, BFS, A-star, Greedy-Search where the next node in each of the strategy is picked from the Priority Queue.In each of the traversal, the information at that particular iteration like average depth, max depth, branching factor are stored in an array and their variation for each of the traversal is analysed and plotted.
+A Generic Tree Search Library is made for exploring a Tree, created with the given input node information, using the corresponding comparator functions written based on their seen time or value, for each of the exploration strategy.
+<p>The Algorithms that can be implemeneted using this Tree Search Library are DFS, BFS, A-star, Greedy-Search where the next node in each of the strategy is picked from the Priority Queue. </p>
+<p>In each of the traversal, the information at that particular iteration like average depth, max depth, branching factor are stored in an array and their variation for each of the traversal is analysed and plotted.</p>
 
+----
 
 ## Input-Output Format
- 
+
 * we need to enter the exploration strategy in CLI terminal 
+<details>
+           <summary>FOR VECTOR IMPLEMENTATION</summary>
+           <p>Download whole repository or download final.c final.h main.c and a folder called graphs in a folder</p>
+           <p> for this implementation first compile by   gcc final.c main.c  and after compiling type ./a.out (strategy)</p>
+           <p> for this we have 4 strategy available DFS BFS GREEDY and A*   for eg. if you want to do dfs type ./a.out DFS</p>
+           <p>after entering strategy give the input in below specified format and press enter</p>
+           <p>for the first three strategy (DFS,BFS,GREEDY) after pressing enter it will give the output, but for A* you need to enter starting position and ending position(i.e. their self state) and press enter for output</p>
+         </details>
+
+ <details>
+           <summary>FOR LINKEDLIST IMPLEMENTATION</summary>
+           <p>Download whole repository or download final_2.c and a folder called graphs in a folder</p>
+           <p> for this implementation first compile by   gcc final_2.c  and after compiling type ./a.out (strategy)</p>
+           <p> for this we have 3 strategy available DFS BFS and GREEDY  for eg. if you want to do dfs type ./a.out DFS</p>
+           <p>after entering strategy give the input in below specified format and press enter</p>
+         </details>        
+
 
 * Input format should be as shown:
 
@@ -19,7 +39,7 @@ A Generic Tree Search Library is made for exploring a Tree, created with the giv
          n times
 
 * The information of the node including the Iteration,State number,max depth,average depth and branching factor for each iteration in the tree traversal is printed.Also Tree that was created is printed with each parent along with corresponding children in the ascending order of their state values.
-* Output Format:
+* Global array Output Format:
      
         <iteration> <state_number> <max_depth> <avg_depth> <Branching_Factor>
 
@@ -52,13 +72,23 @@ A Generic Tree Search Library is made for exploring a Tree, created with the giv
 
 - - - - 
 
-## Graphs
+## Graphs for vector implementation
 ### DFS
-![DFS](graphs/dfs.png)
+![DFS](graphs/dfs1.png)
 ### BFS
-![BFS](graphs/bfs.png)
+![BFS](graphs/bfs1.png)
 ### GREEDY
-![GREEDY](graphs/greedy.png)
+![GREEDY](graphs/greedy1.png)
+
+- - - - 
+
+## Graphs for linked list implementation
+### DFS
+![DFS](graphs/dfs2.png)
+### BFS
+![BFS](graphs/bfs2.png)
+### GREEDY
+![GREEDY](graphs/greedy2.png)
 
 - - - - 
 
@@ -70,4 +100,6 @@ A Generic Tree Search Library is made for exploring a Tree, created with the giv
 * Sanyam
 * Astitva 
 
-              THANK YOU !!!
+
+                                        THANK YOU !!!
+[Go to Top](##Overview "Goto heading-2")
