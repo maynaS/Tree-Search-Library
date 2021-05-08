@@ -47,8 +47,8 @@ struct node
     int value; // data
     int parent;
     // You (as a developer) can add any extra information here [Will not be touched by user]
-    int edge_wt;
-    int f, g, h;
+    int edge_wt; // for A*
+    int f, g, h; // for A*
     int depth;
     int seen_time;          // counter (Priority check)
     int number_of_children; // by updating it on every iteration through that node
@@ -105,4 +105,7 @@ bool IsEmpty(PQ);
 void Gfill(Global GArray[], PQ Q, int state);
 void Gprint(int n);
 
-#endif  //!__FINAL__H__
+void freelist(Node *parentptr, int n);
+
+#endif //!__FINAL__H__
+

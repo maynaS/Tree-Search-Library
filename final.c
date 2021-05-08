@@ -158,10 +158,10 @@ Node Create_Tree(int n, Node *parentptr)
         //Node is created with given input and then added as a child to corresponding parent
         new_node = New_t(self, data, parent);
         
-        //It is added as a parent in parentptr array of nodes
+        //It is added as a parent in parentptr array of nodes  // it is the part where connections are made
         Add_Node(parentptr, n, new_node);
 
-        //???
+        // giving a handle at the root node though not necessary we can also make it a void function it wont affect the algo
         if (i == 0)
             root = new_node;
         else
@@ -191,11 +191,11 @@ void Add_Node(Node *parentptr, int n, Node new_node)
 {
     if (new_node->parent == -1)
     {
-        parentptr[0] = new_node;
+        parentptr[0] = new_node; 
         return;
     }
 
-    //Updating edge_wt parameter
+    //Updating edge_wt parameter for A* search  // we do new_node->parent -1 because it is a zero based indexing
     new_node->edge_wt = ABSS(new_node->value, parentptr[new_node->parent - 1]->value);
     
     //Adding the current node in the vector of its corresponding parent node 
@@ -208,7 +208,7 @@ void Add_Node(Node *parentptr, int n, Node new_node)
     parentptr[new_node->self - 1] = new_node;
 
     //Updating number_of_children parameter
-    parentptr[new_node->parent - 1]->number_of_children++;
+    parentptr[new_node->parent - 1] -> number_of_children++;
 
     return;
 }
@@ -289,11 +289,15 @@ void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
         a->position++;
     }
     else
-    {
+    {   
+       // we find the parent (need not be the actual parent from tree)  and compare it with entered node
+
         a->p[a->position] = new_node;
         a->PositionTracker[new_node->self] = new_node;
         int curr_position = a->position;
         int parent_position = curr_position / 2;
+
+        //if more than one element in our heap then we perforn heapify in log N time so that our que is sorted by the desired priority
         while (parent_position >= 1 && cmpfunc(a->p[curr_position], a->p[parent_position]) /* a->p[curr_position]->seen_time > a->p[parent_position]->seen_time */)
         {
             swap(&a->p[curr_position], &a->p[parent_position]);
@@ -321,9 +325,7 @@ Node Top(PQ a)
 // To check whether given priority queue is empty or not
 bool IsEmpty(PQ a)
 {
-    if (a->position == 1)
-        return true;
-    return false;
+    return (a->position == 1);
 }
 
 //To remove the topmost element from priority queue and simultaneously print the popped element
@@ -332,7 +334,7 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
     if (Q->position > 1)
     {
         Q->PositionTracker[Top(Q)->self] = NULL;
-        printf("%d ", Q->p[1]->self);
+        printf("%d ", Q->p[1]->self);  //we can comment this depending on what we want
         swap(&Q->p[1], &Q->p[Q->position - 1]);
         int idx = 1;
         int size = Q->position - 1;
@@ -373,13 +375,7 @@ bool isPresent(PQ a, int state_number)
         return false;
 }
 
-// ???
-
-void ClearTracker()
-{
-}
-
-// ???
+// this function is used to maintain information in global array with each iteration
 void Gfill(Global GArray[], PQ Q, int state)
 {
     //Filling the information of the global array of struct: GArray[] at each iteration in the traversal
@@ -394,6 +390,9 @@ void Gfill(Global GArray[], PQ Q, int state)
     GArray[state].self = Q->p[1]->self;
     GArray[state].branching_factor = Q->p[1]->number_of_children;
 
+    if (GArray[state - 1].max_depth > GArray[state].depth)
+    GArray[state].max_depth = GArray[state - 1].max_depth;
+    else 
     GArray[state].max_depth = GArray[state].depth;
     return ;
 }
@@ -408,3 +407,22 @@ void Gprint(int N)
     }
     return ;
 }
+
+/*
+void freelist(Node *parentptr,int n)
+{
+  Node current ;
+  Node next;
+  for (int i = 0;i<n;i++)
+ {   
+     current = parentptr[i];
+   while (current != NULL)
+   {
+       next = current->next_child;
+       free(current);
+       current = next;
+   }
+   
+ }
+   
+} */

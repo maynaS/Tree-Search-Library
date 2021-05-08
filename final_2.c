@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
-#define MAX_SIZE 1000
+#define MAX_SIZE 1000007
 
 typedef struct node node;
 typedef struct node *Node;
@@ -36,7 +37,7 @@ struct global
 
 global info[MAX_SIZE];//A Global array of structs to keep track of the information for each of the iteration in traversal
 
-Node create_Tree(int, Node *parentptr);
+Node Create_Tree(int, Node *parentptr);
 void add_node(Node *parentptr, int n, Node new_node);
 Node new_t(int self, int data, int parent);
 void print_tree(Node *parentptr, int n);
@@ -112,7 +113,6 @@ void push(pqptr a, Node new_node, bool cmpfunc(Node a, Node b))
         int parent_position = curr_position / 2;
         while (parent_position >= 1 && cmpfunc(a->p[curr_position], a->p[parent_position]) /* a->p[curr_position]->seen_time > a->p[parent_position]->seen_time */)
         {
-
             swap(&a->p[curr_position], &a->p[parent_position]);
             curr_position /= 2;
             parent_position /= 2;
@@ -180,7 +180,7 @@ bool IsEmpty(pqptr a)
 void printarr(int n)
 {
 
-    printf("iteration\tTraversal\tmaxdepth\tavgdepth\tB.factor\n\n");
+    printf("iteration\t  Visit\t\tmaxdepth\tavgdepth\tB.factor\n\n");
     for (int pos = 1; pos < n; pos++)
     {
         printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n", pos, info[pos].self, info[pos].maxdepth, info[pos].avgdepth, info[pos].branching_factor);
@@ -190,133 +190,24 @@ void printarr(int n)
 //filling the information in global array info[] for each iteration
 void Global(Node vertex, int pos)
 {
-
     cumdepth = cumdepth + vertex->depth;
 
     info[pos].maxdepth = vertex->depth;
+
+    if (info[pos-1].maxdepth > vertex->depth)
+    info[pos].maxdepth = info[pos-1].maxdepth;
+    else 
+    info[pos].maxdepth = vertex->depth;
+
     info[pos].branching_factor = vertex->numchild;
     info[pos].self = vertex->self;
     info[pos].avgdepth = cumdepth / pos;
+
 }
 
-void AssignSeenTime(Node *parentptr, int n)
-{
-
-    int p;
-    printf("\nPress 1 for DFS \n");
-    printf("Press 2 for BFS\n");
-    printf("Press 3 for GREEDY\n\n");
-    scanf("%d", &p);
-
-    int counter = 1;
-    pqptr a = init_pq(a, n);
-    parentptr[1]->seen_time = 1;
-    switch (p)
-    {
-    case 1:
-        push(a, parentptr[1], node_comparator_dfs);
-
-        break;
-    case 2:
-        push(a, parentptr[1], node_comparator_bfs);
-        break;
-    case 3:
-        push(a, parentptr[1], node_comparator_greedy);
-        break;
-
-    default:
-        printf("You pressed wrong keyPress either 1 ,2 or 3.\n");
-        exit(0);
-    }
-
-    bool visited[n + 1];
-    for (int i = 1; i < n + 1; i++)
-        visited[i] = false;
-
-    int iter = 1;
-
-    while (!IsEmpty(a))
-    {
-        Node random = top(a);
-        Node new_node = parentptr[random->self];
-        parentptr[top(a)->self]->seen_time = top(a)->seen_time;
-        visited[top(a)->self] = true;
-
-        switch (p)
-        {
-        case 1:
-            pop(a, node_comparator_dfs);
-            break;
-        case 2:
-            pop(a, node_comparator_bfs);
-            break;
-        case 3:
-            pop(a, node_comparator_greedy);
-            break;
-        default:
-            printf("You pressed wrong keyPress either 1 ,2 or 3.");
-            exit(0);
-        }
-
-        int i = 0;
-        new_node = new_node->next_child;
-
-        while (new_node != NULL)
-        {
-            counter++;
-            new_node->seen_time = counter;
-            new_node->depth = random->depth + 1;
-            if (visited[new_node->self] == false)
-                switch (p)
-                {
-                case 1:
-                    push(a, new_node, node_comparator_dfs);
-
-                    break;
-                case 2:
-                    push(a, new_node, node_comparator_bfs);
-                    break;
-                case 3:
-                    push(a, new_node, node_comparator_greedy);
-                    break;
-
-                default:
-                    printf("You pressed wrong keyPress either 1 ,2 or 3.\n");
-                    exit(0);
-                }
-            new_node = new_node->next_child;
-
-            i++;
-        }
-        random->numchild = i;
-
-        Global(random, iter);
-
-        iter++;
-    }
-
-    switch (p)
-    {
-    case 1:
-        printf("\n***DFS***\n");
-
-        break;
-    case 2:
-        printf("\n***BFS***\n");
-        break;
-    case 3:
-        printf("\n***GREEDY***\n");
-        break;
-
-    default:
-        printf("You pressed wrong keyPress either 1 ,2 or 3.\n");
-        exit(0);
-    }
-    printarr(iter);
-}
 
 //creating the tree
-Node create_Tree(int n, Node *parentptr)
+Node Create_Tree(int n, Node *parentptr)
 {
 
     Node root = NULL;
@@ -341,7 +232,6 @@ Node create_Tree(int n, Node *parentptr)
         if (i == 0)
             root = new_node;
     }
-    parentptr[1]->seen_time = 0;
     
     //for each of the pointer parentptr[i] we have its children in the linked list and each fillparent[i] has the parent
     //so we are linking each parent with the children
@@ -350,8 +240,6 @@ Node create_Tree(int n, Node *parentptr)
         fillParents[i]->next_child = parentptr[i];
         parentptr[i] = fillParents[i];
     }
-    
-    AssignSeenTime(parentptr, n);
     
     return root;
 }
@@ -368,14 +256,18 @@ Node new_t(int self, int data, int parent)
 
     new_node->depth = 0;
     new_node->next_child = NULL;
-    new_node->seen_time = 1e9;
+    new_node->seen_time = 1e5;
     return new_node;
 }
 
 //Adding the newly created node to the corresponding parent at the begining of linked list
 void add_node(Node *parentptr, int n, Node new_node)
 {
-    if (parentptr[new_node->parent] == NULL)
+    if(new_node->parent == -1)
+    {free(new_node);
+    return;}
+
+    else if (parentptr[new_node->parent] == NULL)
     {
         parentptr[new_node->parent] = new_node;
     }
@@ -406,27 +298,251 @@ void print_tree(Node *parentptr, int n)
     }
 }
 
+
+
+void freelist(Node *parentptr,int n)
+{
+  Node current ;
+  Node next;
+  for (int i = 1;i<=n;i++)
+ {   
+     current = parentptr[i];
+   while (current != NULL)
+   {
+       next = current->next_child;
+       free(current);
+       current = next;
+   }
+   
+ }
+   
+}
+
 //***************************************************
 //********************main function******************
 //***************************************************
 
-int main()
+int main(int argc, char **argv) 
 {
-    int n;
-    scanf("%d", &n); 
+    if (argc == 1)	
+    {	
+        printf("Enter the Exploaration Strategy you would like to use in CLI\n");	
+        return 0;	
+    }
 
-    Node tree;
-    Node *parentptr;
-    parentptr = (Node *)malloc(sizeof(Node) * (n + 1));
+    if (argc > 2)	
+    {	
+        printf("Enter only one Exploration Strategy\n");	
+        return 0;	
+    }
+
+    char *strategy = argv[1];
     
-    for (int i = 0; i < n + 1; i++)
-        parentptr[i] = NULL;
-  
-    tree = create_Tree(n, parentptr);
+    int n;
+    scanf("%d", &n);
+    
+    Node tree;
+    Node *parentptr; // declaring the adjacency list
+    
+    parentptr = (Node *)malloc(sizeof(Node) * n);
+    tree = Create_Tree(n, parentptr); // here the graph is made and the connections established
+
+    printf("\n");
+    info[0].maxdepth = 0;
+    
+    // then next step depends on input search option
+    if (strcmp(strategy, "DFS") == 0)
+    {  
+        int counter = 1; // it is for assigning seen time 
+    pqptr a = init_pq(a, n);
+    parentptr[1]->seen_time = 1;
+
+    push(a, parentptr[1], node_comparator_dfs);
+
+    printf("%s\n",strategy);
+
+    bool visited[n + 1];
+    for (int i = 1; i < n + 1; i++)
+        visited[i] = false;
+
+    int iter = 1; // it gives the iteration from 1........n
+     
+     // until the q is empty we iterate and pop the top elemant and assign its children the seen time
+     // and add them to the que where they are sorted according to the strategy with each iteration of children
+    while (!IsEmpty(a))
+    {
+          // recording the top element and then through this we add its children in next while loop
+        Node random = top(a);
+        Node new_node = parentptr[random->self];
+        parentptr[top(a)->self]->seen_time = top(a)->seen_time;
+
+
+        visited[top(a)->self] = true;
+
+        // we pop based on the strategy and again sort the qyeue (heapify) in log N time
+        pop(a, node_comparator_dfs);
+
+        printf("%d ",random->self);
+
+        int i = 0;// to calculate the no. of children of extracted node
+        new_node = new_node->next_child; //going to the first child
+        
+        // here we assign seen time to all the children of popped node and push them in queue
+        while (new_node != NULL)
+        {
+            counter++;
+            new_node->seen_time = counter;
+            new_node->depth = random->depth + 1;
+            if (visited[new_node->self] == false)
+                push(a, new_node, node_comparator_dfs);
+
+            new_node = new_node->next_child;
+
+            i++;
+        }
+        random->numchild = i;
+        Global(random, iter);
+        iter++;
+    }
+    printf("\n\n");
+    free(a->p);
+    free(a);
+    printarr(iter);
+    }
+
+
+        
+     else if (strcmp(strategy, "BFS") == 0)
+    {  
+        int counter = 1; // it is for assigning seen time 
+    pqptr a = init_pq(a, n);
+    parentptr[1]->seen_time = 1;
+
+    push(a, parentptr[1], node_comparator_bfs);
+
+    printf("%s\n",strategy);
+
+    bool visited[n + 1];
+    for (int i = 1; i < n + 1; i++)
+        visited[i] = false;
+
+    int iter = 1; // it gives the iteration from 1........n
+     
+     // until the q is empty we iterate and pop the top elemant and assign its children the seen time
+     // and add them to the que where they are sorted according to the strategy with each iteration of children
+    while (!IsEmpty(a))
+    {
+          // recording the top element and then through this we add its children in next while loop
+        Node random = top(a);
+        Node new_node = parentptr[random->self];
+        parentptr[top(a)->self]->seen_time = top(a)->seen_time;
+
+
+        visited[top(a)->self] = true;
+
+        // we pop based on the strategy and again sort the qyeue (heapify) in log N time
+        pop(a, node_comparator_bfs);
+
+        printf("%d ",random->self);
+
+        int i = 0;// to calculate the no. of children of extracted node
+        new_node = new_node->next_child; //going to the first child
+        
+        // here we assign seen time to all the children of popped node and push them in queue
+        while (new_node != NULL)
+        {
+            counter++;
+            new_node->seen_time = counter;
+            new_node->depth = random->depth + 1;
+            if (visited[new_node->self] == false)
+                push(a, new_node, node_comparator_bfs);
+
+            new_node = new_node->next_child;
+
+            i++;
+        }
+        random->numchild = i;
+        Global(random, iter);
+        iter++;
+    }
+    printf("\n\n");
+      free(a->p);
+    free(a);
+    printarr(iter);
+    }
+       
+    else if (strcmp(strategy, "GREEDY") == 0)
+    {  
+        int counter = 1; // it is for assigning seen time 
+    pqptr a = init_pq(a, n);
+    parentptr[1]->seen_time = 1;
+
+    push(a, parentptr[1], node_comparator_greedy);
+
+    printf("%s\n",strategy);
+
+    bool visited[n + 1];
+    for (int i = 1; i < n + 1; i++)
+        visited[i] = false;
+
+    int iter = 1; // it gives the iteration from 1........n
+     
+     // until the q is empty we iterate and pop the top elemant and assign its children the seen time
+     // and add them to the que where they are sorted according to the strategy with each iteration of children
+    while (!IsEmpty(a))
+    {
+          // recording the top element and then through this we add its children in next while loop
+        Node random = top(a);
+        Node new_node = parentptr[random->self];
+        parentptr[top(a)->self]->seen_time = top(a)->seen_time;
+
+
+        visited[top(a)->self] = true;
+
+        // we pop based on the strategy and again sort the qyeue (heapify) in log N time
+        pop(a, node_comparator_greedy);
+
+        printf("%d ",random->self);
+
+        int i = 0;// to calculate the no. of children of extracted node
+        new_node = new_node->next_child; //going to the first child
+        
+        // here we assign seen time to all the children of popped node and push them in queue
+        while (new_node != NULL)
+        {
+            counter++;
+            new_node->seen_time = counter;
+            new_node->depth = random->depth + 1;
+            if (visited[new_node->self] == false)
+                push(a, new_node, node_comparator_greedy);
+
+            new_node = new_node->next_child;
+
+            i++;
+        }
+        random->numchild = i;
+        Global(random, iter);
+        iter++;
+    }
+    printf("\n\n");
+     free(a->p);
+    free(a);
+    printarr(iter);
+
+    }
+    else
+    {
+        printf("\n\nEnter Exploration Strategy from any of the following: \n\n");
+        printf("1.DFS\n2.BFS\n3.GREEDY\n");
+    }
 
     printf("\n\n###Tree_Map###\n\n");
     print_tree(parentptr, n);
     printf("\n\n");
+
+    freelist(parentptr,n);
+    free(parentptr);
+    
 
     return 0;
 }
