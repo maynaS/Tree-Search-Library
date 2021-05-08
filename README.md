@@ -36,11 +36,11 @@
 
 # Graphs
 ## DFS
-![DFS](graphs/DFS.png)
+![DFS](graphs/dfs.png)
 ## BFS
-![DFS](graphs/DFS.png)
+![BFS](graphs/bfs.png)
 ## GREEDY
-![DFS](graphs/GREEDY.png)
+![GREEDY](graphs/greedy.png)
 
 - - - - 
 
