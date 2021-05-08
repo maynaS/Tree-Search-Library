@@ -1,8 +1,10 @@
 #include "final.h"
 
-#include <stdlib.h>
-#include <assert.h>
 #define ABSS(a, b) ((a) > (b) ? (a) - (b) : (b) - (a))
+
+//****************************************
+//*******VECTOR IMPLEMENTATION************
+//****************************************
 
 void vector_init(vector *V)
 {
@@ -13,11 +15,13 @@ void vector_init(vector *V)
     V->Get = vectorGet;
     V->Free = vectorFree;
     V->Delete = vectorDelete;
+
     V->list.capacity = VECTOR_INIT_CAPACITY;
     V->list.size = 0;
     V->list.obj = malloc(sizeof(Node) * V->list.capacity);
 }
 
+// To get the number of elements present in vector
 int vectorTotal(vector *V)
 {
     if (V)
@@ -26,6 +30,7 @@ int vectorTotal(vector *V)
     }
 }
 
+//To resize the vector as and when needed
 int vectorResize(vector *V, int capacity)
 {
     int status = UNDEFINED;
@@ -42,6 +47,7 @@ int vectorResize(vector *V, int capacity)
     return status;
 }
 
+//To add elements in vector
 int vectorPushBack(vector *V, Node obj)
 {
     int status = UNDEFINED;
@@ -64,6 +70,7 @@ int vectorPushBack(vector *V, Node obj)
     }
 }
 
+//To set a vector element at a particular index within the size of vector
 int vectorSet(vector *V, int idx, Node obj)
 {
     int status = UNDEFINED;
@@ -78,6 +85,7 @@ int vectorSet(vector *V, int idx, Node obj)
     return status;
 }
 
+//To read a vector element at given index
 Node vectorGet(vector *V, int idx)
 {
     Node status = NULL;
@@ -91,6 +99,7 @@ Node vectorGet(vector *V, int idx)
     return status;
 }
 
+//To remove an element present in the vector at a fiven index
 int vectorDelete(vector *V, int idx)
 {
     int status = UNDEFINED;
@@ -116,6 +125,7 @@ int vectorDelete(vector *V, int idx)
     return status;
 }
 
+//To free the memory occupied by vector in heap section of RAM 
 int vectorFree(vector *V)
 {
     int status = UNDEFINED;
@@ -132,58 +142,78 @@ int vectorFree(vector *V)
     return status;
 }
 
+//*****************************************
+//************CREATING TREE****************
+//*****************************************
+
 Node Create_Tree(int n, Node *parentptr)
 {
     Node root = NULL;
     Node new_node;
+
     for (int i = 0, data, self, parent; i < n; i++)
     {
         scanf("%d %d %d", &self, &data, &parent);
+
+        //Node is created with given input and then added as a child to corresponding parent
         new_node = New_t(self, data, parent);
+        
+        //It is added as a parent in parentptr array of nodes
         Add_Node(parentptr, n, new_node);
+
+        //???
         if (i == 0)
             root = new_node;
         else
-        {
             new_node = New_t(self, data, parent);
-        }
     }
     return root;
 }
 
+//Node is created with given input and then added as a child to corresponding parent
 Node New_t(int self, int data, int parent)
 {
-    //static bool seed_rand = false;
     Node new_node;
-    /* Seed only once */
-    // if (!seed_rand) {
-    //  seed_rand = true;
-    //  srand(time(NULL));
-    // }
+    
     new_node = (Node)malloc(sizeof(struct node));
-    // new_node->priority = rand();
     new_node->self = self;
     new_node->value = data;
     new_node->parent = parent;
-    vector_init(&(new_node->children));
+
+    //Initializing vector to store children of correspondong node
+    vector_init(&(new_node->children)); 
+
     return new_node;
 }
 
-void Add_Node(Node *parentptr, int n, Node new_node) // doubt in arrow
+//It is added as a parent in parentptr array of nodes
+void Add_Node(Node *parentptr, int n, Node new_node) 
 {
     if (new_node->parent == -1)
     {
         parentptr[0] = new_node;
         return;
     }
+
+    //Updating edge_wt parameter
     new_node->edge_wt = ABSS(new_node->value, parentptr[new_node->parent - 1]->value);
+    
+    //Adding the current node in the vector of its corresponding parent node 
     parentptr[new_node->parent - 1]->children.PushBack(&(parentptr[new_node->parent - 1]->children), new_node);
+    
+    //Keeping track of information of node's depth & number of children of its parent as each node is getting added
     new_node->depth = parentptr[new_node->parent - 1]->depth + 1;
+    
+    //Adding the node in array of parentptr as a parent
     parentptr[new_node->self - 1] = new_node;
+
+    //Updating number_of_children parameter
     parentptr[new_node->parent - 1]->number_of_children++;
+
     return;
 }
 
+//To print Tree in adjacency list manner
 void Print_Tree(Node *parentptr, int n)
 {
     int i = 0;
@@ -192,7 +222,6 @@ void Print_Tree(Node *parentptr, int n)
         printf("%d --> [ ", parentptr[i]->self);
         for (int j = 0; j < parentptr[i]->children.list.size; j++)
         {
-            // int* val = (int*)parentptr[i]->children.Get(&(parentptr[i]->children),j);
             printf("%d ", (parentptr[i]->children.Get(&(parentptr[i]->children), j))->self);
         }
         printf("]\n");
@@ -200,6 +229,7 @@ void Print_Tree(Node *parentptr, int n)
     }
 }
 
+//Utility Function
 void swap(Node *a, Node *b)
 {
     Node t = *a;
@@ -207,38 +237,39 @@ void swap(Node *a, Node *b)
     *b = t;
 }
 
+//**********************************************
+//**************COMPARATOR FUNCTIONS************
+//**********************************************
+
+//DFS
 bool node_comparator_dfs(const Node a, const Node b)
 {
     return a->seen_time > b->seen_time;
 }
 
+//BFS
 bool node_comparator_bfs(const Node a, const Node b)
 {
     return a->seen_time < b->seen_time;
 }
 
+//GREEDY
 bool node_comparator_greedy(const Node a, const Node b)
 {
     return a->value > b->value;
 }
 
+//A-STAR
 bool node_comparator_astar(const Node a, const Node b)
 {
     return a->f < b->f;
 }
 
-bool isPresent(PQ a, int state_number)
-{
-    if (a->PositionTracker[state_number] != NULL)
-        return true;
-    else
-        return false;
-}
+//*******************************************
+//*************PRIORITY QUEUE****************
+//*******************************************
 
-void ClearTracker()
-{
-}
-
+//To initialize the priority queue 
 PQ Init_pq(PQ a, int n)
 {
     a = (PQ)malloc(sizeof(Priority_Queue));
@@ -248,6 +279,7 @@ PQ Init_pq(PQ a, int n)
     return a;
 }
 
+//To add node in priority queue
 void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
 {
     if (a->position == 0)
@@ -272,6 +304,7 @@ void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
     }
 }
 
+//To get the topmst element of priority queue
 Node Top(PQ a)
 {
     if (a->position == 1)
@@ -285,6 +318,7 @@ Node Top(PQ a)
     }
 }
 
+// To check whether given priority queue is empty or not
 bool IsEmpty(PQ a)
 {
     if (a->position == 1)
@@ -292,6 +326,7 @@ bool IsEmpty(PQ a)
     return false;
 }
 
+//To remove the topmost element from priority queue and simultaneously print the popped element
 void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
 {
     if (Q->position > 1)
@@ -328,19 +363,48 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
     }
 }
 
+//To check if a given node is present in the Priority Queue or not
+
+bool isPresent(PQ a, int state_number)
+{
+    if (a->PositionTracker[state_number] != NULL)
+        return true;
+    else
+        return false;
+}
+
+// ???
+
+void ClearTracker()
+{
+}
+
+// ???
 void Gfill(Global GArray[], PQ Q, int state)
 {
+    //Filling the information of the global array of struct: GArray[] at each iteration in the traversal
     GArray[state].depth = Q->p[1]->depth;
-    // GArray[state].height = Q->p[1]->height;
+
     if (state != 0)
         GArray[state].avg_depth = ((GArray[state - 1].avg_depth) * (state) + Q->p[1]->depth) / (state + 1);
     else
         GArray[state].avg_depth = GArray->depth;
+
     GArray[state].value = Q->p[1]->value;
     GArray[state].self = Q->p[1]->self;
     GArray[state].branching_factor = Q->p[1]->number_of_children;
-    if (GArray[state - 1].max_depth > GArray[state].depth)
-        GArray[state].max_depth = GArray[state - 1].max_depth;
-    else
-        GArray[state].max_depth = GArray[state].depth;
+
+    GArray[state].max_depth = GArray[state].depth;
+    return ;
+}
+
+//Printing information of the GArray[], stored in each iteration
+void Gprint(int N)
+{   
+     printf("Iteration\t Visit\t \tMaxdepth\tAvgdepth\tB.factor\n\n");
+    for (int pos = 0; pos < N; pos++)
+    {
+        printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n", pos+1, GArray[pos].self, GArray[pos].max_depth, GArray[pos].avg_depth, GArray[pos].branching_factor);
+    }
+    return ;
 }
