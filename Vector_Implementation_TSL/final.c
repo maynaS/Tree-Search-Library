@@ -325,7 +325,7 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
     if (Q->position > 1)
     {
         Q->PositionTracker[Top(Q)->self] = NULL;
-        printf("%d ", Q->p[1]->self); //we can comment this depending on what we want
+        //printf("%d ", Q->p[1]->self); //we can comment this depending on what we want
         swap(&Q->p[1], &Q->p[Q->position - 1]);
         int idx = 1;
         int size = Q->position - 1;

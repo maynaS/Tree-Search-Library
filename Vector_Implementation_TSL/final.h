@@ -77,7 +77,7 @@ struct global_part
     int height;
 };
 
-Global GArray[100000]; //just to maintain the information of a particular node in each of the traversals
+Global GArray[1000007]; //just to maintain the information of a particular node in each of the traversals
 
 //Vector ADT
 void vector_init(vector *V);
