@@ -125,18 +125,13 @@ int vectorDelete(vector *V, int idx)
     return status;
 }
 
-//To free the memory occupied by vector in heap section of RAM 
+//To free the memory occupied by vector in heap section of RAM
 int vectorFree(vector *V)
 {
     int status = UNDEFINED;
     if (V)
     {
-        for (int i = 0; i < V->list.size; i++)
-        {
-            free(V->list.obj[i]);
-        }
         free(V->list.obj);
-        free(V);
         status = SUCCESS;
     }
     return status;
@@ -149,7 +144,7 @@ int vectorFree(vector *V)
 Node Create_Tree(int n, Node *parentptr)
 {
     Node root = NULL;
-    Node new_node;
+    Node new_node = NULL;
 
     for (int i = 0, data, self, parent; i < n; i++)
     {
@@ -157,15 +152,13 @@ Node Create_Tree(int n, Node *parentptr)
 
         //Node is created with given input and then added as a child to corresponding parent
         new_node = New_t(self, data, parent);
-        
-        //It is added as a parent in parentptr array of nodes  // it is the part where connections are made
+
+        //It is added as a parent in parentptr array of nodes  // It is the part where connections are made
         Add_Node(parentptr, n, new_node);
 
-        // giving a handle at the root node though not necessary we can also make it a void function it wont affect the algo
+        // Giving a handle at the root node though not necessary we can also make it a void function it wont affect the algo
         if (i == 0)
             root = new_node;
-        else
-            new_node = New_t(self, data, parent);
     }
     return root;
 }
@@ -173,51 +166,50 @@ Node Create_Tree(int n, Node *parentptr)
 //Node is created with given input and then added as a child to corresponding parent
 Node New_t(int self, int data, int parent)
 {
-    Node new_node;
-    
-    new_node = (Node)malloc(sizeof(struct node));
+    Node new_node = (Node)malloc(sizeof(struct node));
+
     new_node->self = self;
     new_node->value = data;
     new_node->parent = parent;
 
     //Initializing vector to store children of correspondong node
-    vector_init(&(new_node->children)); 
+    vector_init(&(new_node->children));
 
     return new_node;
 }
 
 //It is added as a parent in parentptr array of nodes
-void Add_Node(Node *parentptr, int n, Node new_node) 
+void Add_Node(Node *parentptr, int n, Node new_node)
 {
     if (new_node->parent == -1)
     {
-        parentptr[0] = new_node; 
+        parentptr[0] = new_node;
         return;
     }
 
-    //Updating edge_wt parameter for A* search  // we do new_node->parent -1 because it is a zero based indexing
+    //Updating edge_wt parameter for A* search  //Zero based indexing (in Array of Nodes) -> parentptr array
     new_node->edge_wt = ABSS(new_node->value, parentptr[new_node->parent - 1]->value);
-    
-    //Adding the current node in the vector of its corresponding parent node 
+
+    //Adding the current node in the vector of its corresponding parent node
     parentptr[new_node->parent - 1]->children.PushBack(&(parentptr[new_node->parent - 1]->children), new_node);
-    
+
     //Keeping track of information of node's depth & number of children of its parent as each node is getting added
     new_node->depth = parentptr[new_node->parent - 1]->depth + 1;
-    
+
     //Adding the node in array of parentptr as a parent
     parentptr[new_node->self - 1] = new_node;
 
     //Updating number_of_children parameter
-    parentptr[new_node->parent - 1] -> number_of_children++;
+    parentptr[new_node->parent - 1]->number_of_children++;
 
-    return;
+    return ;
 }
 
 //To print Tree in adjacency list manner
 void Print_Tree(Node *parentptr, int n)
 {
     int i = 0;
-    while (parentptr[i] != NULL && i < n)
+    while (i < n)
     {
         printf("%d --> [ ", parentptr[i]->self);
         for (int j = 0; j < parentptr[i]->children.list.size; j++)
@@ -269,7 +261,7 @@ bool node_comparator_astar(const Node a, const Node b)
 //*************PRIORITY QUEUE****************
 //*******************************************
 
-//To initialize the priority queue 
+//To initialize the priority queue
 PQ Init_pq(PQ a, int n)
 {
     a = (PQ)malloc(sizeof(Priority_Queue));
@@ -289,15 +281,14 @@ void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
         a->position++;
     }
     else
-    {   
-       // we find the parent (need not be the actual parent from tree)  and compare it with entered node
+    {
+        // Heapify the priority queue on insertion of new node
 
         a->p[a->position] = new_node;
         a->PositionTracker[new_node->self] = new_node;
         int curr_position = a->position;
         int parent_position = curr_position / 2;
 
-        //if more than one element in our heap then we perforn heapify in log N time so that our que is sorted by the desired priority
         while (parent_position >= 1 && cmpfunc(a->p[curr_position], a->p[parent_position]) /* a->p[curr_position]->seen_time > a->p[parent_position]->seen_time */)
         {
             swap(&a->p[curr_position], &a->p[parent_position]);
@@ -308,7 +299,7 @@ void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
     }
 }
 
-//To get the topmst element of priority queue
+//To get the Topmost element of priority queue
 Node Top(PQ a)
 {
     if (a->position == 1)
@@ -328,13 +319,13 @@ bool IsEmpty(PQ a)
     return (a->position == 1);
 }
 
-//To remove the topmost element from priority queue and simultaneously print the popped element
+//To remove the Topmost element from priority queue and simultaneously print the popped out element
 void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
 {
     if (Q->position > 1)
     {
         Q->PositionTracker[Top(Q)->self] = NULL;
-        printf("%d ", Q->p[1]->self);  //we can comment this depending on what we want
+        printf("%d ", Q->p[1]->self); //we can comment this depending on what we want
         swap(&Q->p[1], &Q->p[Q->position - 1]);
         int idx = 1;
         int size = Q->position - 1;
@@ -375,7 +366,7 @@ bool isPresent(PQ a, int state_number)
         return false;
 }
 
-// this function is used to maintain information in global array with each iteration
+// To maintain information in global array with each iteration
 void Gfill(Global GArray[], PQ Q, int state)
 {
     //Filling the information of the global array of struct: GArray[] at each iteration in the traversal
@@ -390,39 +381,30 @@ void Gfill(Global GArray[], PQ Q, int state)
     GArray[state].self = Q->p[1]->self;
     GArray[state].branching_factor = Q->p[1]->number_of_children;
 
-    if (GArray[state - 1].max_depth > GArray[state].depth)
-    GArray[state].max_depth = GArray[state - 1].max_depth;
-    else 
-    GArray[state].max_depth = GArray[state].depth;
-    return ;
+    if (state-1>=0 && GArray[state - 1].max_depth > GArray[state].depth)
+        GArray[state].max_depth = GArray[state - 1].max_depth;
+    else
+        GArray[state].max_depth = GArray[state].depth;
+    return;
 }
 
 //Printing information of the GArray[], stored in each iteration
 void Gprint(int N)
-{   
-     printf("Iteration\t Visit\t \tMaxdepth\tAvgdepth\tB.factor\n\n");
+{
+    printf("Iteration\t Visit\t \tMaxdepth\tAvgdepth\tB.factor\n\n");
     for (int pos = 0; pos < N; pos++)
     {
-        printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n", pos+1, GArray[pos].self, GArray[pos].max_depth, GArray[pos].avg_depth, GArray[pos].branching_factor);
+        printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n", pos + 1, GArray[pos].self, GArray[pos].max_depth, GArray[pos].avg_depth, GArray[pos].branching_factor);
     }
-    return ;
+    return;
 }
 
-/*
-void freelist(Node *parentptr,int n)
+void freemem(Node *parentptr, int n)
 {
-  Node current ;
-  Node next;
-  for (int i = 0;i<n;i++)
- {   
-     current = parentptr[i];
-   while (current != NULL)
-   {
-       next = current->next_child;
-       free(current);
-       current = next;
-   }
-   
- }
-   
-} */
+    for (int i = 0; i < n; i++)
+    {
+        parentptr[i]->children.Free(&parentptr[i]->children);
+        free(parentptr[i]);
+    }
+    free(parentptr);
+}

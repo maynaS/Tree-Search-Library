@@ -1,11 +1,24 @@
 #include "final.h"
 #include <string.h>
 
-int counter = 1; // it is the seen time counter or the actual seen time
-int state = 0;   // it is the ith iteration in which we visit tree node and nth index of global array
+//A function designed to take inputs from 
+//a file input.txt and direct the output to 
+//a file named output.txt
+
+void DirectToFile()
+{
+    #ifndef ONLINE_JUDGE
+        freopen("input.txt", "r", stdin);
+        freopen("output.txt", "w", stdout);
+    #endif
+}
+
+int counter = 1; // To maintain seen time counter or the actual seen time
+int state = 0;   // It is the ith iteration in which we visit tree node and nth index of global array
 
 int main(int argc, char **argv)
 {
+    DirectToFile();
     if (argc == 1)
     {
         printf("Enter the Exploaration Strategy you would like to use in CLI\n");
@@ -18,20 +31,25 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    char *strategy = argv[1];
+    char *strategy = "BFS"/* argv[1] */;
 
     int n;
     scanf("%d", &n);
 
     Node tree;
-    Node *parentptr; // declaring the adjacency list
+    Node *parentptr; // Declaring the adjacency list
 
     parentptr = (Node *)malloc(sizeof(Node) * n);
-    tree = Create_Tree(n, parentptr); // here the graph is made and the connections established
+    for (int i = 0; i < n; i++)
+    {
+        parentptr[i] = NULL;
+    }
+    
+    tree = Create_Tree(n, parentptr); // Here the graph is made and the connections established
 
     printf("\n");
 
-    // then next step depends on input search option
+    // Next step depends on input search option
 
     if (strcmp(strategy, "DFS") == 0)
     {
@@ -42,21 +60,21 @@ int main(int argc, char **argv)
 
         printf("%s\n", strategy);
 
-        // until the q is empty we iterate and pop the top elemant and assign its children the seen time
-        // and add them to the que where they are sorted according to the strategy with each iteration of children
+        /* Until the queue is empty we iterate and pop the top elemant and assign its children the seen time
+        and add them to the Priority Queue where they are sorted according to the strategy with each iteration of children */
         while (!IsEmpty(Q))
         {
             Node random = Top(Q);
-            // recording the top element and then through this we add its children in next while loop
+            // To keep track of the topmost element and then through this we add its children in next while loop
 
             Node new_node = parentptr[random->self - 1];
 
             Gfill(GArray, Q, state);
 
-            Pop(Q, node_comparator_dfs); // we pop based on the strategy and again sort the qyeue (heapify) in log N time
+            Pop(Q, node_comparator_dfs); // we pop based on the strategy and again sort the queue (heapify) in log N time
             state++;
 
-            // here we assign seen time to all the children of popped node and push them in queue
+            // Here we assign seen time to all the children of popped node and push them in queue
             for (int i = 0; i < new_node->children.list.size; i++)
             {
                 counter++;
@@ -67,6 +85,7 @@ int main(int argc, char **argv)
             }
         }
 
+        //To de-allocate the memory provided to priority queue
         free(Q->PositionTracker);
         free(Q->p);
         free(Q);
@@ -83,19 +102,21 @@ int main(int argc, char **argv)
 
         printf("%s\n", strategy);
 
-        // until the q is empty we iterate and pop the top elemant and assign its children the seen time
-        // and add them to the que where they are sorted according to the strategy with each iteration of children
+        /* Until the queue is empty we iterate and pop the top elemant and assign its children the seen time
+        and add them to the Priority Queue where they are sorted according to the strategy with each iteration of children */
         while (!IsEmpty(Q))
         {
             Node random = Top(Q);
+            // To keep track of the topmost element and then through this we add its children in next while loop
+
             Node new_node = parentptr[random->self - 1];
 
             Gfill(GArray, Q, state);
 
-            Pop(Q, node_comparator_bfs); // we pop based on the strategy and again sort the qyeue (heapify) in log N time
+            Pop(Q, node_comparator_bfs); // We pop based on the strategy and again sort the qyeue (heapify) in log N time
             state++;
 
-            // here we assign seen time to all the children of popped node and push them in queue
+            // Here we assign seen time to all the children of popped node and push them in queue
             for (int i = 0; i < new_node->children.list.size; i++)
             {
                 counter++;
@@ -106,13 +127,14 @@ int main(int argc, char **argv)
             }
         }
 
+        //To de-allocate the memory provided to priority queue
         free(Q->PositionTracker);
         free(Q->p);
         free(Q);
         printf("\n\n");
         //Gprint(state);
     }
-
+    
     else if (strcmp(strategy, "GREEDY") == 0)
     {
         PQ Q = Init_pq(Q, n);
@@ -122,19 +144,21 @@ int main(int argc, char **argv)
 
         printf("%s\n", strategy);
 
-        // until the q is empty we iterate and pop the top elemant and assign its children the seen time
-        // and add them to the que where they are sorted according to the strategy with each iteration of children
+        /* Until the queue is empty we iterate and pop the top elemant and assign its children the seen time
+        and add them to the Priority Queue where they are sorted according to the strategy with each iteration of children */
         while (!IsEmpty(Q))
         {
             Node random = Top(Q);
+            // To keep track of the topmost element and then through this we add its children in next while loop
+
             Node new_node = parentptr[random->self - 1];
 
             Gfill(GArray, Q, state);
 
-            Pop(Q, node_comparator_greedy); // we pop based on the strategy and again sort the qyeue (heapify) in log N time
+            Pop(Q, node_comparator_greedy); // We pop based on the strategy and again sort the qyeue (heapify) in log N time
             state++;
 
-            // here we assign seen time to all the children of popped node and push them in queue
+            // Here we assign seen time to all the children of popped node and push them in queue
 
             for (int i = 0; i < new_node->children.list.size; i++)
             {
@@ -149,14 +173,16 @@ int main(int argc, char **argv)
         printf("\n\n");
         // Gprint(state);
 
+        //To de-allocate the memory provided to priority queue
         free(Q->PositionTracker);
         free(Q->p);
         free(Q);
     }
-    else if (strcmp(strategy, "A*") == 0)
+    
+    else if (strcmp(strategy, "A-STAR") == 0)
     {
         int start, dest;
-        int mat[n + 1][n + 1];
+        long long mat[n + 1][n + 1];
         int idx = start - 1;
         bool arr[n + 1];
 
@@ -173,15 +199,16 @@ int main(int argc, char **argv)
                 if (i == j)
                     mat[i][j] = 0;
                 else
-                    mat[i][j] = INT_MAX;
+                    mat[i][j] = llinf;
             }
         }
 
-        for (int i = 0; i < n; i++) // we iterate through the parent nodes
+        //To update the matrix with bidirectional edges of tree
+        for (int i = 0; i < n; i++) 
         {
             Node N = parentptr[i];
             int j = 0;
-            while (j < N->children.list.size) // iterating its all children
+            while (j < N->children.list.size) 
             {
                 mat[i][N->children.list.obj[j]->self - 1] = N->children.list.obj[j]->edge_wt;
                 mat[N->children.list.obj[j]->self - 1][i] = N->children.list.obj[j]->edge_wt;
@@ -189,14 +216,14 @@ int main(int argc, char **argv)
             }
         }
 
-        // updating edgewt. of i->j th node if we get a shorter path
+        // Updating edgewt. of i->j th node if we get a shorter path
         for (int i = 0; i < n; i++)
         {
             for (int j = 0; j < n; j++)
             {
                 for (int k = 0; k < n; k++)
                 {
-                    if (mat[i][k] != INT_MAX && mat[k][j] != INT_MAX && mat[i][j] > mat[i][k] + mat[k][j])
+                    if (mat[i][k] != llinf && mat[k][j] != llinf && mat[i][j] > mat[i][k] + mat[k][j])
                     {
                         mat[i][j] = mat[i][k] + mat[k][j];
                     }
@@ -204,7 +231,10 @@ int main(int argc, char **argv)
             }
         }
 
-        //Updating the (h parameter) Heuristic value of each node
+        //Updating the (h parameter) Heuristic value of each node 
+        //And also adding parent of a node as its child to maintain the list of all neighbours
+        //In the children vector of the node 
+        //This makes the traversal easier when adding the neighbouring elements to the priority queue
         for (int i = 0; i < n; i++)
         {
             parentptr[i]->h = mat[i][dest - 1];
@@ -225,12 +255,16 @@ int main(int argc, char **argv)
         {
             arr[i] = false;
         }
+
         printf("\n");
         printf("\n%s\n", strategy);
-        // when the q is not empty or we do not reach the destination then we iterate
+
+        // Until the q is not empty or we do not reach the destination, we iterate
         while (!IsEmpty(Q) && idx != dest - 1)
         {
             Node random = Top(Q);
+            // To keep track of the topmost element and then through this we add its children in next while loop
+
             Node new_node = parentptr[random->self - 1];
 
             arr[random->self - 1] = true;
@@ -259,15 +293,24 @@ int main(int argc, char **argv)
             state++;
         }
         printf("%d\n", dest);
-        Gprint(state);
+        // Gprint(state);
+
+        for (int i = 1; i < n; i++)
+        {
+            parentptr[i]->children.Delete(&parentptr[i]->children,parentptr[i]->children.list.size-1);
+        }
+        
+
+        //To de-allocate the memory provided to priority queue
         free(Q->PositionTracker);
         free(Q->p);
         free(Q);
     }
+    
     else
     {
-        printf("\n\nEnter Exploration Strategy from any of the following: \n\n");
-        printf("1. DFS\n2. BFS\n3.GREEDY\n4. A*\n");
+        printf("\n\nEnter Exploration Strategy from any of the following: \n");
+        printf("1. DFS\n2. BFS\n3. GREEDY\n4. A-STAR\n");
     }
 
     printf("\n");
@@ -275,8 +318,7 @@ int main(int argc, char **argv)
     Print_Tree(parentptr, n);
 
     printf("\n");
-    //freelist(parentptr,n);
-    //free(parentptr);
+    freemem(parentptr,n);
 
     return 0;
 }
