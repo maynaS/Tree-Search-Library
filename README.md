@@ -21,15 +21,16 @@ A Generic Tree Search Library is made for exploring a Tree, created with the giv
            <p>Enter your input in input.txt file as per the format specified below for DFS, BFS & GREEDY strategies</p>
            <p>For A-STAR strategy, along with the format specified below...You'll also need to enter the ID for starting node as well as the target node.</p>
            <p> For this implementation, first compile by gcc final.c main.c  and after compiling run the program as per this format ./a.out [strategy name] </p>
-           <p> You can choose from the 4 strategies available DFS BFS GREEDY and A*. For eg. if you want to use dfs traversal type ./a.out DFS</p>
+           <p> You can choose from the 4 strategies available DFS BFS GREEDY and A-STAR. For eg. if you want to use dfs traversal type ./a.out DFS</p>
            <p>After entering strategy give the input in below specified format and press enter</p>
          </details>
 
  <details>
            <summary>FOR LINKEDLIST IMPLEMENTATION</summary>
-           <p>Download whole repository or download final_2.c and a folder called graphs in a folder</p>
-           <p> for this implementation first compile by   gcc final_2.c  and after compiling type ./a.out (strategy)</p>
-           <p> for this we have 3 strategy available DFS BFS and GREEDY  for eg. if you want to do dfs type ./a.out DFS</p>
+           <p>Download entire repository or download the Linked-List Implementation folder.</p>
+           <p>Enter your input in input.txt file as per the format specified below for DFS, BFS & GREEDY strategies</p>
+           <p> For this implementation, first compile by gcc final.c main.c  and after compiling run the program as per this format ./a.out [strategy name] </p>
+           <p> for this we have 3 strategy available DFS BFS and GREEDY  for eg. if you want to do dfs traversal type ./a.out DFS</p>
            <p>after entering strategy give the input in below specified format and press enter</p>
          </details>        
 
@@ -102,7 +103,7 @@ A Generic Tree Search Library is made for exploring a Tree, created with the giv
 
 - - - - 
 
-### Contributers
+### Contributers **TEAM 58**
 
 * #### **Greeshma**  
 * #### **Yash**
