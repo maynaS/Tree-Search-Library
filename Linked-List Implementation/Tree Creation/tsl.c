@@ -6,10 +6,12 @@ Node create_Tree(int n, Node *parentptr)
     Node root = NULL;
     Node new_node;
     Node fillParents[n+1];
-    for (int i = 0, data, self, parent; i < n; i++)
+    long long int data;
+    int self, parent;
+    for (int i = 0; i < n; i++)
     {
 
-        scanf("%d %d %d", &self, &data, &parent);
+        scanf("%d %lld %d", &self, &data, &parent);
 
         new_node = new_t(self, data, parent);
         fillParents[self] = (Node)malloc(sizeof(node));
@@ -30,7 +32,7 @@ Node create_Tree(int n, Node *parentptr)
     return root;
 }
 
-Node new_t(int self, int data, int parent)
+Node new_t(int self, long long int data, int parent)
 {
     Node new_node;
     new_node = (Node)malloc(sizeof(struct node));

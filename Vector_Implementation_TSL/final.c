@@ -391,10 +391,10 @@ void Gfill(Global GArray[], PQ Q, long long  state)
 //Printing information of the GArray[], stored in each iteration
 void Gprint(long long  N)
 {
-    printf("Iteration\t Visit\t \tMaxdepth\tAvgdepth\tB.factor\n\n");
+    printf("iteration\t  Visit\t\t\tmaxdepth\t\tavgdepth\tB.factor\n\n");
     for (long long  pos = 0; pos < N; pos++)
     {
-        printf("%lld\t\t   %lld\t\t  %lld\t\t %.2f\t\t  %lld\n", pos + 1, GArray[pos].self, GArray[pos].max_depth, GArray[pos].avg_depth, GArray[pos].branching_factor);
+        printf("%lld\t\t   %6lld\t\t  %6lld\t\t %10.2f\t\t  %6lld\n", pos + 1, GArray[pos].self, GArray[pos].max_depth, GArray[pos].avg_depth, GArray[pos].branching_factor);
     }
     return;
 }

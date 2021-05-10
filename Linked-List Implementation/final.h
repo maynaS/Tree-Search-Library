@@ -19,7 +19,7 @@ struct node
 {
 
     int self;
-    int value; 
+    long long int value; 
     int parent;
 
     int depth;
@@ -46,7 +46,7 @@ global info[MAX_SIZE];//A Global array of structs to keep track of the informati
 
 Node Create_Tree(int, Node *parentptr);
 void add_node(Node *parentptr, int n, Node new_node);
-Node new_t(int self, int data, int parent);
+Node new_t(int self, long long int data, int parent);
 void print_tree(Node *parentptr, int n);
 
 

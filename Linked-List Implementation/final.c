@@ -123,7 +123,7 @@ void printarr(int n)
     printf("iteration\t  Visit\t\t\tmaxdepth\t\tavgdepth\tB.factor\n\n");
     for (int pos = 1; pos < n; pos++)
     {
-        printf("%d\t\t   %6d\t\t  %6d\t\t %6.2f\t\t  %6d\n", pos, info[pos].self, info[pos].maxdepth, info[pos].avgdepth, info[pos].branching_factor);
+        printf("%d\t\t   %6d\t\t  %6d\t\t %10.2f\t\t  %6d\n", pos, info[pos].self, info[pos].maxdepth, info[pos].avgdepth, info[pos].branching_factor);
     }
 }
 
@@ -153,10 +153,12 @@ Node Create_Tree(int n, Node *parentptr)
     Node root = NULL;
     Node new_node;
     Node fillParents[n + 1];
-    for (int i = 0, data, self, parent; i < n; i++)
+    long long int data;
+    int self, parent;
+    for (int i = 0; i < n; i++)
     {
 
-        scanf("%d %d %d", &self, &data, &parent);
+        scanf("%d %lld %d", &self, &data, &parent);
  
         //for the given input self value,filling the information of parents at each respective index
         fillParents[self] = (Node)malloc(sizeof(node));
@@ -185,7 +187,7 @@ Node Create_Tree(int n, Node *parentptr)
 }
 
 //function for creating a node and filling information with the given self value,data and parent
-Node new_t(int self, int data, int parent)
+Node new_t(int self,long long int data, int parent)
 {
     Node new_node;
     new_node = (Node)malloc(sizeof(struct node));
