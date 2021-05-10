@@ -13,10 +13,10 @@ void DirectToFile()
     #endif
 }
 
-int counter = 1; // To maintain seen time counter or the actual seen time
-int state = 0;   // It is the ith iteration in which we visit tree node and nth index of global array
+long long counter = 1; // To maintain seen time counter or the actual seen time
+long long state = 0;   // It is the ith iteration in which we visit tree node and nth index of global array
 
-int main(int argc, char **argv)
+int main(long long  argc, char **argv)
 {
     DirectToFile();
     if (argc == 1)
@@ -31,8 +31,8 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    int n;
-    scanf("%d", &n);
+    long long  n;
+    scanf("%lld", &n);
 
     Node tree;
     Node *parentptr; // Declaring the adjacency list
@@ -179,15 +179,15 @@ int main(int argc, char **argv)
 
     else if (strcmp(argv[1], "A-STAR") == 0)
     {
-        int start, dest;
+        long long  start, dest;
         long long mat[n + 1][n + 1];
-        int idx = start - 1;
+        long long  idx = start - 1;
         bool arr[n + 1];
 
         printf("Enter the starting node: ");
-        scanf("%d", &start);
+        scanf("%lld", &start);
         printf("Enter thr destination node: ");
-        scanf("%d", &dest);
+        scanf("%lld", &dest);
 
         //Floyd Warshall where path from node to itself is considered to be 0
         for (int i = 0; i < n + 1; i++)
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
         for (int i = 0; i < n; i++)
         {
             Node N = parentptr[i];
-            int j = 0;
+            long long j = 0;
             while (j < N->children.list.size)
             {
                 mat[i][N->children.list.obj[j]->self - 1] = N->children.list.obj[j]->edge_wt;
@@ -215,11 +215,11 @@ int main(int argc, char **argv)
         }
 
         // Updating edgewt. of i->j th node if we get a shorter path
-        for (int i = 0; i < n; i++)
+        for (long long i = 0; i < n; i++)
         {
-            for (int j = 0; j < n; j++)
+            for (long long j = 0; j < n; j++)
             {
-                for (int k = 0; k < n; k++)
+                for (long long k = 0; k < n; k++)
                 {
                     if (mat[i][k] != llinf && mat[k][j] != llinf && mat[i][j] > mat[i][k] + mat[k][j])
                     {
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
         //And also adding parent of a node as its child to maintain the list of all neighbours
         //In the children vector of the node
         //This makes the traversal easier when adding the neighbouring elements to the priority queue
-        for (int i = 0; i < n; i++)
+        for (long long i = 0; i < n; i++)
         {
             parentptr[i]->h = mat[i][dest - 1];
             if (i != 0)
@@ -249,7 +249,7 @@ int main(int argc, char **argv)
         parentptr[start - 1]->seen_time = 1;
         Push(Q, parentptr[start - 1], node_comparator_astar);
 
-        for (int i = 0; i < n; i++)
+        for (long long i = 0; i < n; i++)
         {
             arr[i] = false;
         }
@@ -269,7 +269,7 @@ int main(int argc, char **argv)
             Gfill(GArray, Q, state);
             Pop(Q, node_comparator_astar);
 
-            for (int i = 0; i < new_node->children.list.size; i++)
+            for (long long i = 0; i < new_node->children.list.size; i++)
             {
                 idx = new_node->children.list.obj[i]->self - 1;
                 if (parentptr[idx]->self == dest)
@@ -313,7 +313,7 @@ int main(int argc, char **argv)
         state++;
         Gprint(state);
 
-        for (int i = 1; i < n; i++)
+        for (long long  i = 1; i < n; i++)
         {
             parentptr[i]->children.Delete(&parentptr[i]->children, parentptr[i]->children.list.size - 1);
         }

@@ -22,7 +22,7 @@ void vector_init(vector *V)
 }
 
 // To get the number of elements present in vector
-int vectorTotal(vector *V)
+long long  vectorTotal(vector *V)
 {
     if (V)
     {
@@ -31,9 +31,9 @@ int vectorTotal(vector *V)
 }
 
 //To resize the vector as and when needed
-int vectorResize(vector *V, int capacity)
+long long  vectorResize(vector *V, long long  capacity)
 {
-    int status = UNDEFINED;
+    long long  status = UNDEFINED;
     if (V)
     {
         Node *obj = realloc(V->list.obj, sizeof(Node) * capacity);
@@ -48,9 +48,9 @@ int vectorResize(vector *V, int capacity)
 }
 
 //To add elements in vector
-int vectorPushBack(vector *V, Node obj)
+long long  vectorPushBack(vector *V, Node obj)
 {
-    int status = UNDEFINED;
+    long long  status = UNDEFINED;
     if (V)
     {
         if (V->list.capacity = V->list.size)
@@ -71,9 +71,9 @@ int vectorPushBack(vector *V, Node obj)
 }
 
 //To set a vector element at a particular index within the size of vector
-int vectorSet(vector *V, int idx, Node obj)
+long long  vectorSet(vector *V, long long  idx, Node obj)
 {
-    int status = UNDEFINED;
+    long long  status = UNDEFINED;
     if (V)
     {
         if (idx >= 0 && idx < V->list.size)
@@ -86,7 +86,7 @@ int vectorSet(vector *V, int idx, Node obj)
 }
 
 //To read a vector element at given index
-Node vectorGet(vector *V, int idx)
+Node vectorGet(vector *V, long long  idx)
 {
     Node status = NULL;
     if (V)
@@ -100,9 +100,9 @@ Node vectorGet(vector *V, int idx)
 }
 
 //To remove an element present in the vector at a fiven index
-int vectorDelete(vector *V, int idx)
+long long  vectorDelete(vector *V, long long  idx)
 {
-    int status = UNDEFINED;
+    long long  status = UNDEFINED;
     if (V)
     {
         if (idx < 0 || idx > V->list.size)
@@ -110,7 +110,7 @@ int vectorDelete(vector *V, int idx)
             return status;
         }
         V->list.obj[idx] = NULL;
-        for (int i = idx; i < V->list.size - 1; i++)
+        for (long long  i = idx; i < V->list.size - 1; i++)
         {
             V->list.obj[i] = V->list.obj[i + 1];
             V->list.obj[i + 1] = NULL;
@@ -126,9 +126,9 @@ int vectorDelete(vector *V, int idx)
 }
 
 //To free the memory occupied by vector in heap section of RAM
-int vectorFree(vector *V)
+long long  vectorFree(vector *V)
 {
-    int status = UNDEFINED;
+    long long  status = UNDEFINED;
     if (V)
     {
         free(V->list.obj);
@@ -141,14 +141,14 @@ int vectorFree(vector *V)
 //************CREATING TREE****************
 //*****************************************
 
-Node Create_Tree(int n, Node *parentptr)
+Node Create_Tree(long long  n, Node *parentptr)
 {
     Node root = NULL;
     Node new_node = NULL;
 
-    for (int i = 0, data, self, parent; i < n; i++)
+    for (long long  i = 0, data, self, parent; i < n; i++)
     {
-        scanf("%d %d %d", &self, &data, &parent);
+        scanf("%lld %lld %lld", &self, &data, &parent);
 
         //Node is created with given input and then added as a child to corresponding parent
         new_node = New_t(self, data, parent);
@@ -164,7 +164,7 @@ Node Create_Tree(int n, Node *parentptr)
 }
 
 //Node is created with given input and then added as a child to corresponding parent
-Node New_t(int self, int data, int parent)
+Node New_t(long long  self, long long  data, long long  parent)
 {
     Node new_node = (Node)malloc(sizeof(struct node));
 
@@ -179,7 +179,7 @@ Node New_t(int self, int data, int parent)
 }
 
 //It is added as a parent in parentptr array of nodes
-void Add_Node(Node *parentptr, int n, Node new_node)
+void Add_Node(Node *parentptr, long long  n, Node new_node)
 {
     if (new_node->parent == -1)
     {
@@ -206,15 +206,15 @@ void Add_Node(Node *parentptr, int n, Node new_node)
 }
 
 //To print Tree in adjacency list manner
-void Print_Tree(Node *parentptr, int n)
+void Print_Tree(Node *parentptr, long long  n)
 {
-    int i = 0;
+    long long  i = 0;
     while (i < n)
     {
-        printf("%d --> [ ", parentptr[i]->self);
-        for (int j = 0; j < parentptr[i]->children.list.size; j++)
+        printf("%lld --> [ ", parentptr[i]->self);
+        for (long long  j = 0; j < parentptr[i]->children.list.size; j++)
         {
-            printf("%d ", (parentptr[i]->children.Get(&(parentptr[i]->children), j))->self);
+            printf("%lld ", (parentptr[i]->children.Get(&(parentptr[i]->children), j))->self);
         }
         printf("]\n");
         i++;
@@ -262,7 +262,7 @@ bool node_comparator_astar(const Node a, const Node b)
 //*******************************************
 
 //To initialize the priority queue
-PQ Init_pq(PQ a, int n)
+PQ Init_pq(PQ a, long long  n)
 {
     a = (PQ)malloc(sizeof(Priority_Queue));
     a->position = 1;
@@ -286,8 +286,8 @@ void Push(PQ a, Node new_node, bool cmpfunc(const Node a, const Node b))
 
         a->p[a->position] = new_node;
         a->PositionTracker[new_node->self] = new_node;
-        int curr_position = a->position;
-        int parent_position = curr_position / 2;
+        long long  curr_position = a->position;
+        long long  parent_position = curr_position / 2;
 
         while (parent_position >= 1 && cmpfunc(a->p[curr_position], a->p[parent_position]) /* a->p[curr_position]->seen_time > a->p[parent_position]->seen_time */)
         {
@@ -325,15 +325,15 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
     if (Q->position > 1)
     {
         Q->PositionTracker[Top(Q)->self] = NULL;
-        //printf("%d ", Q->p[1]->self); //we can comment this depending on what we want
+        //printf("%lld ", Q->p[1]->self); //we can comment this depending on what we want
         swap(&Q->p[1], &Q->p[Q->position - 1]);
-        int idx = 1;
-        int size = Q->position - 1;
+        long long  idx = 1;
+        long long  size = Q->position - 1;
         while (1)
         {
-            int self = idx;
-            int left_child = 2 * self;
-            int right_child = 2 * self + 1;
+            long long  self = idx;
+            long long  left_child = 2 * self;
+            long long  right_child = 2 * self + 1;
             if (left_child < size && !(cmpfunc(Q->p[self], Q->p[left_child])))
             {
                 self = left_child;
@@ -358,7 +358,7 @@ void Pop(PQ Q, bool cmpfunc(const Node a, const Node b))
 
 //To check if a given node is present in the Priority Queue or not
 
-bool isPresent(PQ a, int state_number)
+bool isPresent(PQ a, long long  state_number)
 {
     if (a->PositionTracker[state_number] != NULL)
         return true;
@@ -367,7 +367,7 @@ bool isPresent(PQ a, int state_number)
 }
 
 // To maintain information in global array with each iteration
-void Gfill(Global GArray[], PQ Q, int state)
+void Gfill(Global GArray[], PQ Q, long long  state)
 {
     //Filling the information of the global array of struct: GArray[] at each iteration in the traversal
     GArray[state].depth = Q->p[1]->depth;
@@ -389,19 +389,19 @@ void Gfill(Global GArray[], PQ Q, int state)
 }
 
 //Printing information of the GArray[], stored in each iteration
-void Gprint(int N)
+void Gprint(long long  N)
 {
     printf("Iteration\t Visit\t \tMaxdepth\tAvgdepth\tB.factor\n\n");
-    for (int pos = 0; pos < N; pos++)
+    for (long long  pos = 0; pos < N; pos++)
     {
-        printf("%d\t\t   %d\t\t  %d\t\t %.2f\t\t  %d\n", pos + 1, GArray[pos].self, GArray[pos].max_depth, GArray[pos].avg_depth, GArray[pos].branching_factor);
+        printf("%lld\t\t   %lld\t\t  %lld\t\t %.2f\t\t  %lld\n", pos + 1, GArray[pos].self, GArray[pos].max_depth, GArray[pos].avg_depth, GArray[pos].branching_factor);
     }
     return;
 }
 
-void freemem(Node *parentptr, int n)
+void freemem(Node *parentptr, long long  n)
 {
-    for (int i = 0; i < n; i++)
+    for (long long  i = 0; i < n; i++)
     {
         parentptr[i]->children.Free(&parentptr[i]->children);
         free(parentptr[i]);
